@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+
+<style>
+
+  .fakeItem{
+    border : 1px solid black;
+
+
+  }
+
+
+    .page-link.active {
+
+       background-color: #337cbc;
+
+     }
+
+
+</style>
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+
+
+<div style="height:auto;border : 1px solid black;background-color:#337cbc">
+<div class="container">
+  <div class="w-100">
+    <div class="align-items-center flex-column">
+      <div style="height:170px">
+
+      </div>
+
+      <div class="text-center">
+        <h2 class="fw-bold" style="color:white">사기 계좌 검색</h2>
+      </div>
+
+      <div class="mt-2">
+        <div class="d-flex justify-content-center">
+          <div class="col-4">
+
+          </div>
+          <div class="col-4">
+            <div class="input-group input-group-lg">
+             <input type="text" name="suspectAccountNumber" id="suspectAccountNumber" placeholder="ex) 0000-0000-0000-0000"  class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+              <span class="input-group-text fw-bold" id="searchBtn">조회</span>
+
+            </div>
+
+          </div>
+          <div class="col-4 ms-1">
+          </div>
+
+        </div>
+     </div>
+
+      <div class="text-center mt-2">
+        <small style="color:white">범죄 피해 방지 및 범죄피해자 보호를 위해 2006년부터 운영되고 있습니다.</small>
+      </div>
+
+        <div class="text-center mt-2">
+            <small class="fw-bold" style="color:white;" id="SearchMsg"></small>
+        </div>
+
+      <div style="height:130px">
+
+      </div>
+
+      <div class="text-center mb-2">
+        <a href="#" style="color:white;" class="mr-1">관할 경찰서 찾기</a>
+        <a id="fakeAccountReport" class="ms-1" style="color:white" >사기 계좌 신고 </a>
+      </div>
+
+
+
+    </div>
+
+
+
+  </div>
+
+</div>
+</div>
+
+
+<div class="container mt-3">
+
+  <table class="table mt-3">
+
+
+  </table>
+  <div id="paging" class="mt-2">
+
+  </div>
+
+</div>
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+
+</body>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+
+
+  $(document).on('click','.searchPaging' ,function(e){
+
+     let page = e.target.getAttribute('data-num');
+
+      let suspectAccountNumber = $('#suspectAccountNumber').val()
+
+
+      $.ajax({
+              type:"GET",
+              url: '/searchAccountNumber',
+              data: {
+                  page : page,
+                  suspectAccountNumber : suspectAccountNumber
+              },
+              dataType : 'json',
+              success:function(data){
+
+
+               $('.table').html(' ')
+                $('#paging').html(' ')
+
+
+
+                let str =  + "<table class='table'>"
+                                            + "<thead>"
+                                            + "<tr>"
+                                                + "<th scope='col'>" + " # " + "</th>"
+                                                + "<th scope='col'>" + "사이트 명" + "</th>"
+                                                + "<th scope='col'>" + "사기 물품 종류" + "</th>"
+                                                + "<th scope='col'>" + "피해 금액" + "</th>"
+                                                  + "<th scope='col'>" + "신고일" + "</th>"
+                                            + "</tr>"
+                                            + "</thead>"
+                                            + "<tbody>"
+                                            for(let i = 0; i< data.list.length; i++){
+
+                                              str += "<tr>"
+                                                    + "<th scope='row'>"+ " # " + "</th>"
+                                                    + "<td>" +  data.list[i].siteName + "</td>"
+                                                    + "<td>" +  data.list[i].scamProductType  + "</td>"
+                                                    + "<td>" + data.list[i].depositAmount  + "원" +"</td>"
+                                                    + "<td>" + data.list[i].reportDate  + "</td>"
+                                                    + "<td><button class='reportDetailView' style='background-color:#337cbc;border:1px solid #337cbc;color:white;border-radius:3%' data-value='" + data.list[i].reportNum  + "'>" + '자세히 보기' + "</button></td>"
+                                                + "</tr>"
+                                            }
+
+                                            str += "</tbody>"
+                                        + "</table>"
+
+             $('.table').html(str)
+
+
+                let str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link searchPaging' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active searchPaging'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  searchPaging'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link searchPaging' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                   $('#paging').html(str2)
+
+
+              },
+                  error:function(){
+                      alert('잠시 후 다시 시도해주세요.')
+                  }
+              })
+
+  })
+
+
+
+
+  $('#searchBtn').click(function(){
+
+
+    let suspectAccountNumber = $('#suspectAccountNumber').val()
+
+
+
+      $.ajax({
+              type:"GET",
+              url: '/searchAccountNumber',
+              data: {
+                  page : 1,
+                  size : 5,
+                  suspectAccountNumber : suspectAccountNumber
+              },
+              dataType : 'json',
+              success:function(data){
+
+
+               $('.table').html(' ')
+                $('#paging').html(' ')
+
+                if(data.size == 0){
+                    $('#SearchMsg').html('해당 계좌번호에 대한 신고 내역이 존재하지 않습니다.')
+                    return;
+                }else{
+                   $('#SearchMsg').text('총 ' + data.total + '건의 사기 계좌 신고 내역이 조회 되었습니다.')
+
+                }
+
+
+
+
+                let str =  + "<table class='table'>"
+                                            + "<thead>"
+                                            + "<tr>"
+                                                + "<th scope='col'>" + " # " + "</th>"
+                                                + "<th scope='col'>" + "사이트 명" + "</th>"
+                                                + "<th scope='col'>" + "사기 물품 종류" + "</th>"
+                                                + "<th scope='col'>" + "피해 금액" + "</th>"
+                                                  + "<th scope='col'>" + "신고일" + "</th>"
+                                            + "</tr>"
+                                            + "</thead>"
+                                            + "<tbody>"
+                                            for(let i = 0; i< data.list.length; i++){
+
+                                              str += "<tr>"
+                                                    + "<th scope='row'>"+ " # " + "</th>"
+                                                    + "<td>" +  data.list[i].siteName + "</td>"
+                                                    + "<td>" +  data.list[i].scamProductType  + "</td>"
+                                                    + "<td>" + data.list[i].depositAmount  + "원" +"</td>"
+                                                    + "<td>" + data.list[i].reportDate  + "</td>"
+                                                    + "<td><button class='reportDetailView' style='background-color:#337cbc;border:1px solid #337cbc;color:white;border-radius:3%' data-value='" + data.list[i].reportNum  + "'>" + '자세히 보기' + "</button></td>"
+                                                + "</tr>"
+                                            }
+
+                                            str += "</tbody>"
+                                        + "</table>"
+
+             $('.table').html(str)
+
+
+                let str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link searchPaging' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active searchPaging'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  searchPaging'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link searchPaging' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                   $('#paging').html(str2)
+
+
+              },
+                  error:function(){
+                      alert('잠시 후 다시 시도해주세요.')
+                  }
+              })
+
+      })
+
+
+
+
+
+
+  $(document).on('click','.reportDetailView' ,function(e){
+
+
+      let reportNum = e.currentTarget.getAttribute('data-value');
+
+      window.open("AccountReportViewDetail.html?reportNum=" + reportNum , "자세히 보기", "width=1000, height=1000, left=200, top=100");
+
+
+
+
+  })
+
+
+
+    $('#fakeAccountReport').click(function(){
+
+        if([[${#authentication.principal}]] != 'anonymousUser'){
+            location.href='/accountReport'
+        }else{
+            alert('로그인이 필요한 서비스 입니다.')
+        }
+
+
+    })
+
+
+
+
+</script>
+
+
+</html>

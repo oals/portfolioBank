@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+
+<style>
+
+    .page-link.active {
+
+       background-color: #337cbc;
+
+     }
+
+</style>
+
+
+
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<div class="container">
+
+    <h3 class="text-start fw-bold">내 계좌</h3>
+    <hr>
+        <div class="align-items-start flex-column" style="height: auto;">
+
+            <div class="w-50">
+                <div class="m-3 input-group">
+                    <span class="input-group-text fw-bold" id="basic-addon4" style="background-color:#337cbc;color:white;">성명</span>
+                    <input type="text" class="form-control" readonly th:value="${accountDTO.memberId}" aria-label="Username" aria-describedby="basic-addon4">
+                </div>
+
+                <div class="m-3 input-group">
+                    <span class="input-group-text fw-bold" id="basic-addon5" style="background-color:#337cbc;color:white;">계좌번호</span>
+                    <input type="text" class="form-control" readonly th:value="|${accountDTO.accountProductName} (${accountDTO.accountNumber})|" aria-label="Username" aria-describedby="basic-addon5">
+                </div>
+
+                <div class="m-3 input-group">
+                    <span class="input-group-text fw-bold" id="basic-addon6" style="background-color:#337cbc;color:white;">예금액</span>
+                    <input type="text" class="form-control" readonly th:value="|${#numbers.formatDecimal(accountDTO.balance, 0, 'COMMA', 0, 'POINT')}원|" aria-label="Username" aria-describedby="basic-addon6">
+                </div>
+                <div>
+                    <div class="d-flex justify-content-start">
+                        <div class="col-2 ms-3">
+                            <button type="button" style="background-color:#337cbc;"><a th:href="@{/sendPage(accountNumber=${accountDTO.accountNumber})}" style="text-decoration:none;color:white;" class="fw-bold">이체하기</a></button>
+                        </div>
+                        <div class="col-3 ms-1">
+                            <button type="button" style="background-color:#337cbc;"><a id="MyAccount" style="text-decoration:none;color:white;" class="fw-bold">내 다른 계좌 보기</a></button>
+                        </div>
+                        <div class="col-7"></div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <h3 class="text-start mt-5 fw-bold">가입 중인 적금</h3>
+            <hr>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">상품명</th>
+                    <th scope="col">현재 적금액</th>
+                    <th scope="col">미납횟수</th>
+                    <th scope="col">가입일</th>
+                    <th scope="col">종료일</th>
+                </tr>
+                </thead>
+                <tbody id="joinSavingsHistory">
+                <tr th:each="item : ${savingsDTOTrueList.list}">
+                    <td scope="row" th:text="${item.savingsProductName}"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.savingsBalance, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${item.missedPayments}회|"></td>
+                    <td th:text="${item.savingsStartDate}"></td>
+                    <td th:text="${item.savingsEndDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(savingsDTOTrueList.list)}" class="text-center">
+                <span class="fw-bold mt-2 mb-2">현재 가입된 적금이 없습니다</span>
+            </div>
+
+
+            <div id="savingsDTOTrueListPaging" class="mt-2">
+                <div class=" "  th:if="${not #strings.isEmpty(savingsDTOTrueList.list)}" >
+                    <nav aria-label="Page navigation example justify-content-center align-items-center">
+                        <ul class="pagination justify-content-center " >
+                            <li class="page-item" th:if="${savingsDTOTrueList.prev}">
+                                <a class="page-link savingsDTOTrueListBtn" pageLink="pagelink" th:data-num="${savingsDTOTrueList.start-1}">Previous</a>
+                            </li>
+
+                            <!-- 페이지 번호 표시 -->
+                            <th:block  th:each="i : ${#numbers.sequence(savingsDTOTrueList.start,savingsDTOTrueList.end)}" >
+                                <li>
+                                    <th:block th:if="${savingsDTOTrueList.page == i}">
+                                        <a class="page-link active savingsDTOTrueListBtn"   th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                    <th:block th:unless="${savingsDTOTrueList.page == i}">
+                                        <a class="page-link savingsDTOTrueListBtn " th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                </li>
+                            </th:block>
+                            <!-- ------- -->
+
+                            <li class="page-item" th:if="${savingsDTOTrueList.next}">
+                                <a class="page-link savingsDTOTrueListBtn" pageLink="pagelink" th:data-num="${savingsDTOTrueList.end+1}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+
+
+
+            <h3 class="text-start mt-5 fw-bold">종료 된 적금</h3>
+            <hr>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">상품명</th>
+                    <th scope="col">총 적금액</th>
+                    <th scope="col">이율</th>
+                    <th scope="col">반환금</th>
+                    <th scope="col">미납횟수</th>
+                    <th scope="col">가입일</th>
+                    <th scope="col">종료일</th>
+                </tr>
+                </thead>
+                <tbody id="EndSavingsHistory"  >
+                <tr th:each="item : ${savingsDTOFalseList.list}">
+                    <td scope="row" th:text="${item.savingsProductName}"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.savingsBalance, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.earnedInterest, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.returnAmount, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${item.missedPayments}회|"></td>
+                    <td th:text="${item.savingsStartDate}"></td>
+                    <td th:text="${item.savingsEndDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(savingsDTOFalseList.list)}" class="text-center">
+                <span class="fw-bold mt-2 mb-2">종료된 적금 내역이 없습니다</span>
+            </div>
+
+
+            <div id="savingsDTOFalseListPaging" class="mt-2">
+                <div class=" "  th:if="${not #strings.isEmpty(savingsDTOFalseList.list)}" >
+                    <nav aria-label="Page navigation example justify-content-center align-items-center">
+                        <ul class="pagination justify-content-center " >
+                            <li class="page-item" th:if="${savingsDTOFalseList.prev}">
+                                <a class="page-link savingsDTOFalseListBtn" pageLink="pagelink" th:data-num="${savingsDTOFalseList.start-1}">Previous</a>
+                            </li>
+
+                            <!-- 페이지 번호 표시 -->
+                            <th:block  th:each="i : ${#numbers.sequence(savingsDTOFalseList.start,savingsDTOFalseList.end)}" >
+                                <li>
+                                    <th:block th:if="${savingsDTOFalseList.page == i}">
+                                        <a class="page-link active savingsDTOFalseListBtn"   th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                    <th:block th:unless="${savingsDTOFalseList.page == i}">
+                                        <a class="page-link savingsDTOFalseListBtn " th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                </li>
+                            </th:block>
+                            <!-- ------- -->
+
+                            <li class="page-item" th:if="${savingsDTOFalseList.next}">
+                                <a class="page-link savingsDTOFalseListBtn" pageLink="pagelink" th:data-num="${savingsDTOFalseList.end+1}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+
+
+
+            <h3 class="text-start mt-5 fw-bold">입출금 내역</h3>
+            <hr>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">성명</th>
+                    <th scope="col">계좌번호</th>
+                    <th scope="col">여부</th>
+                    <th scope="col">금액</th>
+                    <th scope="col">잔액</th>
+                    <th scope="col">날짜</th>
+                </tr>
+                </thead>
+                <tbody id="accountHistory"  >
+                <tr th:each="item : ${historyDTO.list}">
+                    <th scope="row">#</th>
+                    <td th:text="${item.counterpartyName}"></td>
+                    <td th:text="|${item.counterpartyAccountName} (${item.counterpartyAccountNumber})|"></td>
+                    <td th:text="${item.opt}"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.money, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.balance, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="${item.updateDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(historyDTO.list)}" class="text-center">
+                <span class="fw-bold mt-2 mb-2">입출금 내역이 없습니다</span>
+            </div>
+
+
+            <div id="AccountPaging" class="mt-2">
+                <div class=" "  th:if="${not #strings.isEmpty(historyDTO.list)}" >
+                    <nav aria-label="Page navigation example justify-content-center align-items-center">
+                        <ul class="pagination justify-content-center " >
+                            <li class="page-item" th:if="${historyDTO.prev}">
+                                <a class="page-link accountPagingBtn" pageLink="pagelink" th:data-num="${historyDTO.start-1}">Previous</a>
+                            </li>
+
+                            <!-- 페이지 번호 표시 -->
+                            <th:block  th:each="i : ${#numbers.sequence(historyDTO.start,historyDTO.end)}" >
+                                <li>
+                                    <th:block th:if="${historyDTO.page == i}">
+                                        <a class="page-link active accountPagingBtn"   th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                    <th:block th:unless="${historyDTO.page == i}">
+                                        <a class="page-link accountPagingBtn " th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                </li>
+                            </th:block>
+                            <!-- ------- -->
+
+                            <li class="page-item" th:if="${historyDTO.next}">
+                                <a class="page-link accountPagingBtn" pageLink="pagelink" th:data-num="${historyDTO.end+1}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+
+
+
+            <h3 class="text-start mt-4 fw-bold" >적금 내역</h3>
+            <hr>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">성명</th>
+                    <th scope="col">여부</th>
+                    <th scope="col">금액</th>
+                    <th scope="col">잔액</th>
+                    <th scope="col">날짜</th>
+                </tr>
+                </thead>
+                <tbody id="SavingsHistory">
+                <tr th:each="item : ${savingsHistoryDTO.list}">
+                    <th scope="row">#</th>
+                    <td th:text="${item.counterpartyName}"></td>
+                    <td th:text="${item.opt}"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.money, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.balance, 0, 'COMMA', 0, 'POINT')}원|"></td>
+                    <td th:text="${item.updateDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(savingsHistoryDTO.list)}" class="text-center">
+                <span class="fw-bold mt-2 mb-2">적금 내역이 없습니다</span>
+            </div>
+
+
+            <div id="SavingsPaging" class="mt-2">
+                <div class=" "  th:if="${not #strings.isEmpty(savingsHistoryDTO.list)}" >
+                    <nav aria-label="Page navigation example justify-content-center align-items-center">
+                        <ul class="pagination justify-content-center " >
+                            <li class="page-item" th:if="${savingsHistoryDTO.prev}">
+                                <a class="page-link savingsPagingBtn" pageLink="pagelink" th:data-num="${savingsHistoryDTO.start-1}">Previous</a>
+                            </li>
+
+                            <!-- 페이지 번호 표시 -->
+                            <th:block  th:each="i : ${#numbers.sequence(savingsHistoryDTO.start,savingsHistoryDTO.end)}" >
+                                <li>
+                                    <th:block th:if="${savingsHistoryDTO.page == i}">
+                                        <a class="page-link active savingsPagingBtn"   th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                    <th:block th:unless="${savingsHistoryDTO.page == i}">
+                                        <a class="page-link savingsPagingBtn " th:data-num="${i}">[[${i}]]</a>
+                                    </th:block>
+                                </li>
+                            </th:block>
+                            <!-- ------- -->
+
+                            <li class="page-item" th:if="${historyDTO.next}">
+                                <a class="page-link savingsPagingBtn" pageLink="pagelink" th:data-num="${savingsHistoryDTO.end+1}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+
+
+        </div>
+</div>
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+
+$('#MyAccount').click(function(){
+        window.open("MyAccount.html?accountNumber=" +  [[${accountDTO.accountNumber}]] , "내 게좌", "width=700, height=600, left=400, top=100");
+})
+
+
+
+
+    $(document).on('click','.savingsPagingBtn' ,function(e){
+
+        let opt = '적금'
+        let accountNumber = [[${accountDTO.accountNumber}]]
+        let page = e.target.getAttribute('data-num');
+
+
+       $.ajax({
+            type:"GET",
+            url:"/GetOptAccountInfo",
+            dataType : 'json',
+            data: {
+                opt : opt,
+                accountNumber : accountNumber,
+                page : page
+            },
+            success:function(data){
+
+               $('#SavingsHistory').html(' ')
+               $('#SavingsPaging').html(' ')
+
+                    let str = ""
+                    let str2 = ""
+                    console.log(data)
+
+
+                    if(data.list.length == 0){
+                      str += "<div class='text-center'>"
+                          + "<span class='fw-bold mt-2 mb-2'>" + "적금 내역이 없습니다" + "</span>"
+                      + "</div>"
+                      }
+
+                    for(let i = 0; i < data.list.length; i++){
+                     str += "<tr>"
+                        + "<th scope='row'>" + "#" + "</th>"
+                        + "<td>" + data.list[i].counterpartyName + "</td>"
+                        + "<td>" + data.list[i].opt + "</td>"
+                        + "<td>" + data.list[i].money.toLocaleString() +  "원" + "</td>"
+                        + "<td>" + data.list[i].balance.toLocaleString() + "원" +  "</td>"
+                        + "<td>" + data.list[i].updateDate  + "</td>"
+                    + "</tr>"
+                    }
+
+                $('#SavingsHistory').html(str)
+
+
+
+                str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link savingsPagingBtn' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active savingsPagingBtn'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  savingsPagingBtn'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link savingsPagingBtn' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                $('#SavingsPaging').html(str2)
+
+
+            },
+            error:function(){
+                alert('잠시 후 다시 시도해주세요.')
+            }
+         })
+
+
+
+
+    })
+
+
+
+
+  $(document).on('click','.savingsDTOTrueListBtn' ,function(e){
+
+
+        let accountNumber = [[${accountDTO.accountNumber}]]
+        let page = e.target.getAttribute('data-num');
+        let isActive = true
+
+  $.ajax({
+
+    type :'GET',
+    dataType : 'json',
+    url : '/savingsDTOList',
+    data : {
+    accountNumber : accountNumber,
+    page : page,
+    isActive : isActive
+    },
+    success:function(data){
+        console.log(data)
+
+        $('#joinSavingsHistory').html(' ')
+        $('#savingsDTOTrueListPaging').html(' ')
+
+        let str = ' '
+        let str2 = ' '
+
+         if(data.list.length == 0){
+            str += "<div class='text-center'>"
+                + "<span class='fw-bold mt-2 mb-2'>" + "현재 가입된 적금이 없습니다" + "</span>"
+                + "</div>"
+            }
+
+
+            for(let i = 0; i < data.list.length; i++){
+                  str += "<tr>"
+                     + "<th scope='row'>" + "#" + "</th>"
+                     + "<td>" + data.list[i].savingsProductName + "</td>"
+                     + "<td>" + data.list[i].savingsBalance.toLocaleString() + '원' + "</td>"
+                     + "<td>" + data.list[i].missedPayments + "회" +  "</td>"
+                     + "<td>" + data.list[i].savingsStartDate  + "</td>"
+                     + "<td>" + data.list[i].savingsEndDate  + "</td>"
+                 + "</tr>"
+                 }
+
+
+
+
+           $('#joinSavingsHistory').html(str)
+
+
+            str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link savingsDTOTrueListBtn' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active savingsDTOTrueListBtn'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  savingsDTOTrueListBtn'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link savingsDTOTrueListBtn' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                $('#savingsDTOTrueListPaging').html(str2)
+
+    },
+    error:function(e){
+        alert('오류')
+
+    }
+
+  })
+
+
+  })
+
+
+
+  $(document).on('click','.savingsDTOFalseListBtn' ,function(e){
+
+
+        let accountNumber = [[${accountDTO.accountNumber}]]
+        let page = e.target.getAttribute('data-num');
+        let isActive = false
+
+  $.ajax({
+
+    type :'GET',
+    dataType : 'json',
+    url : '/savingsDTOList',
+    data : {
+    accountNumber : accountNumber,
+    page : page,
+    isActive : isActive
+    },
+    success:function(data){
+        console.log(data)
+
+        $('#EndSavingsHistory').html(' ')
+        $('#savingsDTOFalseListPaging').html(' ')
+
+        let str = ' '
+        let str2 = ' '
+
+         if(data.list.length == 0){
+            str += "<div class='text-center'>"
+                + "<span class='fw-bold mt-2 mb-2'>" + "종료된 적금 내역이 없습니다" + "</span>"
+                + "</div>"
+            }
+
+
+    for(let i = 0; i < data.list.length; i++){
+          str += "<tr>"
+             + "<td>" + data.list[i].savingsProductName + "</td>"
+             + "<td>" + data.list[i].savingsBalance.toLocaleString() + '원' + "</td>"
+             + "<td>" + data.list[i].earnedInterest.toLocaleString()  + '원'+ "</td>"
+             + "<td>" + data.list[i].returnAmount.toLocaleString() +  "원" + "</td>"
+             + "<td>" + data.list[i].missedPayments + "회" +  "</td>"
+             + "<td>" + data.list[i].savingsStartDate  + "</td>"
+             + "<td>" + data.list[i].savingsEndDate  + "</td>"
+         + "</tr>"
+         }
+
+
+
+           $('#EndSavingsHistory').html(str)
+
+
+            str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link savingsDTOFalseListBtn' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active savingsDTOFalseListBtn'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  savingsDTOFalseListBtn'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link savingsDTOFalseListBtn' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                $('#savingsDTOFalseListPaging').html(str2)
+
+    },
+    error:function(e){
+        alert('오류')
+
+    }
+
+  })
+
+
+  })
+
+
+
+    $(document).on('click','.accountPagingBtn' ,function(e){
+
+        let opt = '전체'
+        let accountNumber = [[${accountDTO.accountNumber}]]
+        let page = e.target.getAttribute('data-num');
+
+
+       $.ajax({
+            type:"GET",
+            url:"/GetOptAccountInfo",
+            dataType : 'json',
+            data: {
+                opt : opt,
+                accountNumber : accountNumber,
+                page : page
+            },
+            success:function(data){
+
+               $('#accountHistory').html(' ')
+               $('#AccountPaging').html(' ')
+
+                    let str = ""
+                    let str2 = ""
+                    console.log(data)
+
+
+                    if(data.list.length == 0){
+                      str += "<div class='text-center'>"
+                          + "<span class='fw-bold mt-2 mb-2'>" + "입출금 내역이 없습니다" + "</span>"
+                      + "</div>"
+                      }
+
+                    for(let i = 0; i < data.list.length; i++){
+                     str += "<tr>"
+                        + "<th scope='row'>" + "#" + "</th>"
+                        + "<td>" + data.list[i].counterpartyName + "</td>"
+                        + "<td>" + data.list[i].counterpartyAccountName +  '(' + data.list[i].counterpartyAccountNumber +  ")" + "</td>"
+                        + "<td>" + data.list[i].opt + "</td>"
+                        + "<td>" + data.list[i].money.toLocaleString() +  "원" + "</td>"
+                        + "<td>" + data.list[i].balance.toLocaleString() + "원" +  "</td>"
+                        + "<td>" + data.list[i].updateDate  + "</td>"
+                    + "</tr>"
+                    }
+
+
+                $('#accountHistory').html(str)
+
+
+
+                str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link accountPagingBtn' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active accountPagingBtn'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  accountPagingBtn'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link accountPagingBtn' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                $('#AccountPaging').html(str2)
+
+
+            },
+            error:function(){
+                alert('잠시 후 다시 시도해주세요.')
+            }
+
+         })
+
+
+
+
+    })
+
+
+</script>
+
+</body>
+</html>

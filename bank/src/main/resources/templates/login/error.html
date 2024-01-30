@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<head>
+    <title>login</title>
+
+    <link href="../../static/bootstrap/css/bootstrap.min.css"
+          th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+    <script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+            th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="fragments/header::Main_header"></div>
+
+
+    <div class="container mt-3">
+        에러페이지
+        <div class="d-flex justify-content-center">
+            <form action="/user/login" method="post">
+
+                <div class="mb-3 col-8">
+                    <label for="userId" class="form-label">아이디</label>
+                    <input type="text" class="form-control" id="userId" name="userId" aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-3 col-8">
+                    <label for="userPw" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" id="userPw" name="userPw">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit"  id = "btn" class="btn btn-primary">로그인</button>
+                <div class="d-flex justify-content-center">
+                    <span> <a href="#" th:href="@{/find_id}">>아이디 찾기</a> </span>
+                    <span> <a href="#" th:href="@{/find_pw}">>비밀번호 찾기</a></span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+<div th:replace="fragments/footer::footer"></div>
+
+</body>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+
+
+
+</script>
+
+
+</html>

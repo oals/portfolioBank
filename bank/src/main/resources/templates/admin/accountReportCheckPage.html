@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+
+<style>
+
+
+</style>
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+
+<div class="container">
+  <div class="w-100">
+
+
+
+      <div class="align-items-start flex-column">
+        <div style="height:70px">
+        </div>
+        <div class="text-center">
+          <span class="fw-bold ">신고 검토</span>
+        </div>
+
+        <hr class="mt-4 mb-4">
+
+
+        <div class="d-flex justify-content-center">
+          <div class="col-2" style="height:auto;border : 1px solid black">
+            <ul style="list-style:none">
+              <li class="mt-3"><a href="/AccountReportCheckPage" class="fw-bold" style="text-decoration:none;color:black">사기 계좌 검토</a> </li>
+              <hr>
+              <li><a href="#" class="fw-bold" style="text-decoration:none;color:black"> 대출 승인</a></li>
+              <hr>
+              <li><a href="#" class="fw-bold" style="text-decoration:none;color:black"> 체크카드 승인 승인</a></li>
+              <hr>
+            </ul>
+
+          </div>
+
+          <div class="col-10 ms-2" style="border: 1px solid black">
+
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope='col'> #</th>
+                <th scope='col'>사이트 명</th>
+                <th scope='col'>사기 물품 종류</th>
+                <th scope='col'>피해 금액</th>
+                <th scope='col'>신고일</th>
+                <th scop='col'></th>
+              </tr>
+              </thead>
+              <tbody id="reportList">
+              <tr th:each="item : ${reportListDTO.list}" >
+                <th scope="row">#</th>
+                <td th:text="${item.siteName}"></td>
+                <td th:text="${item.scamProductType}"></td>
+                <td th:text="|${item.depositAmount}원|"></td>
+                <td th:text="${item.reportDate}"></td>
+                <td>
+                  <button class="viewDetails" th:data-value="${item.reportNum}" style='background-color:#337cbc;border:1px solid #337cbc;color:white;border-radius:3%' >자세히보기</button>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(reportListDTO.list)}" class="text-center">
+              <span class="fw-bold mt-2 mb-3">신고 내역이 없습니다</span>
+            </div>
+
+
+            <div id="reportListPaging" class="mt-2">
+              <div class=" "  th:if="${not #strings.isEmpty(reportListDTO.list)}" >
+                <nav aria-label="Page navigation example justify-content-center align-items-center">
+                  <ul class="pagination justify-content-center " >
+                    <li class="page-item" th:if="${reportListDTO.prev}">
+                      <a class="page-link reportListPagingBtn" pageLink="pagelink" th:data-num="${reportListDTO.start-1}">Previous</a>
+                    </li>
+
+                    <!-- 페이지 번호 표시 -->
+                    <th:block  th:each="i : ${#numbers.sequence(reportListDTO.start,reportListDTO.end)}" >
+                      <li>
+                        <th:block th:if="${reportListDTO.page == i}">
+                          <a class="page-link active reportListPagingBtn"   th:data-num="${i}">[[${i}]]</a>
+                        </th:block>
+                        <th:block th:unless="${reportListDTO.page == i}">
+                          <a class="page-link reportListPagingBtn " th:data-num="${i}">[[${i}]]</a>
+                        </th:block>
+                      </li>
+                    </th:block>
+                    <!-- ------- -->
+
+                    <li class="page-item" th:if="${reportListDTO.next}">
+                      <a class="page-link reportListPagingBtn" pageLink="pagelink" th:data-num="${reportListDTO.end+1}">Next</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+
+            </div>
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+</div>
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+
+</body>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+  $(document).on('click','.viewDetails' ,function(e){
+
+    let reportNum = $(e.target).data('value');
+
+    window.open("AccountReportViewDetail.html?reportNum=" + reportNum , "자세히 보기", "width=1000, height=1000, left=200, top=100");
+
+
+  })
+
+
+
+  $(document).on('click','.reportListPagingBtn' ,function(e){
+
+
+        let page = e.target.getAttribute('data-num');
+
+  $.ajax({
+
+    type :'GET',
+    dataType : 'json',
+    url : '/reportAccountList',
+    data : {
+    page : page,
+    },
+    success:function(data){
+        console.log(data)
+
+        $('#reportList').html(' ')
+        $('#reportListPaging').html(' ')
+
+        let str = ' '
+        let str2 = ' '
+
+         if(data.list.length == 0){
+            str += "<div class='text-center'>"
+                + "<span class='fw-bold mt-2 mb-2'>" + "신고 내역이 없습니다" + "</span>"
+                + "</div>"
+            }
+
+
+    for(let i = 0; i < data.list.length; i++){
+          str += "<tr>"
+             + "<th scope='row'>" + "#" + "</th>"
+             + "<td>" + data.list[i].siteName + "</td>"
+             + "<td>" + data.list[i].scamProductType + "</td>"
+             + "<td>" + data.list[i].depositAmount  + '원'+ "</td>"
+             + "<td>" + data.list[i].reportDate +  "</td>"
+             + "<td>"
+                + "<button class='viewDetails' data-value='" + data.list[i].reportNum + "'" + "style='background-color:#337cbc;border:1px solid #337cbc;color:white;border-radius:3%'>자세히보기</button>"
+             + "</td>"
+         + "</tr>"
+         }
+
+
+
+           $('#reportList').html(str)
+
+
+            str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link reportListPagingBtn' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active reportListPagingBtn'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  reportListPagingBtn'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link reportListPagingBtn' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                $('#reportListPaging').html(str2)
+
+    },
+    error:function(e){
+        alert('오류')
+
+    }
+
+  })
+
+
+  })
+
+
+
+
+
+
+
+</script>
+
+
+</html>

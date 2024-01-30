@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<div class="container" >
+
+    <form action="/register" method="post" enctype="application/x-www-form-urlencoded;charset=UTF-8" id="fm">
+      <div class="d-flex justify-content-center" >
+
+      <div class="w-50 align-items-center mt-3 mb-3" style="border:2px solid black">
+        <div class="m-3 text-center">
+            <span class="fw-bold">회원가입</span>
+        </div>
+          <hr>
+
+          <div class="m-3 input-group w-50">
+              <span class="input-group-text fw-bold" id="basic-addon3" style="background-color:#337cbc;color:white;">아이디</span>
+              <input type="text" class="form-control "   placeholder="사용할 아이디" aria-label="Username" aria-describedby="basic-addon3" name="memberId" id="memberId">
+              <span class="input-group-text fw-bold"  id="memberIdCheck" style="background-color:#337cbc;color:white;">중복 검사</span>
+          </div>
+
+
+          <div class="m-3 input-group w-50 mt-4">
+              <span class="input-group-text fw-bold" id="basic-addon4" style="background-color:#337cbc;color:white;">비밀번호</span>
+              <input type="password" class="form-control "  placeholder="사용할 비밀번호" aria-label="Username" aria-describedby="basic-addon4" name="pswd" id="pswd">
+          </div>
+
+
+          <div class="m-3 input-group w-50 mt-4">
+              <span class="input-group-text fw-bold" id="basic-addon5" style="background-color:#337cbc;color:white;">이름</span>
+              <input type="text" class="form-control "   placeholder="ex) 홍길동" aria-label="Username" aria-describedby="basic-addon5" name="memberName" id="memberName">
+          </div>
+
+          <div class="m-3 input-group w-50 mt-4">
+              <span class="input-group-text fw-bold" id="basic-addon6" style="background-color:#337cbc;color:white;">이메일</span>
+              <input type="email" class="form-control "  placeholder="ex) test@naver.com" aria-label="Username" aria-describedby="basic-addon6" name="email" id="email">
+          </div>
+
+
+
+
+          <div class="m-3 input-group w-50 mt-4">
+              <span class="input-group-text fw-bold" id="basic-addon8" style="background-color:#337cbc;color:white;">생년월일</span>
+              <input type="text" class="form-control "  maxlength="10" placeholder="ex)1999-04-20" aria-label="Username" aria-describedby="basic-addon8" name="age" id="age">
+          </div>
+
+
+          <div class="m-3 input-group w-75 mt-5 ">
+              <span class="input-group-text fw-bold" id="basic-addon7" style="background-color:#337cbc;color:white;">전화번호</span>
+              <input type="text" class="form-control " maxlength="13"   placeholder="ex) 010-3424-5353" aria-label="Username" aria-describedby="basic-addon7" name="phone" id="phone">
+              <span class="input-group-text fw-bold " id="sendSMS"  style="background-color:#337cbc;color:white;">인증번호 받기</span>
+          </div>
+
+          <div class="m-3 input-group w-50">
+              <span class="input-group-text fw-bold" id="basic-addon13" style="background-color:#337cbc;color:white;">인증번호</span>
+              <input type="text" class="form-control " aria-label="Username" maxlength="4" aria-describedby="basic-addon13" id="smsData" >
+              <span class="input-group-text fw-bold" id="smsChkBtn"  style="background-color:#337cbc;color:white;">확인</span>
+          </div>
+
+
+          <div class="m-3 input-group w-50 mt-5 ">
+              <span class="input-group-text fw-bold" id="basic-addon9" style="background-color:#337cbc;color:white;">우편번호</span>
+              <input type="text" class="form-control "  placeholder="우편 번호" aria-label="Username" aria-describedby="basic-addon9" name="address" id="address">
+              <span class="input-group-text fw-bold" id="findAddressBtn" style="background-color:#337cbc;color:white;">우편 번호 찾기</span>
+          </div>
+
+          <div class="m-3 input-group w-75 ">
+              <span class="input-group-text fw-bold" id="basic-addon10" style="background-color:#337cbc;color:white;">도로명 주소</span>
+              <input type="text" class="form-control"  placeholder="도로명 주소" aria-label="Username" aria-describedby="basic-addon9" name="memberAddress2" id="memberAddress2">
+          </div>
+
+          <div class="m-3 input-group w-75 ">
+              <span class="input-group-text fw-bold" id="basic-addon11" style="background-color:#337cbc;color:white;">상세 주소</span>
+              <input type="text" class="form-control"   placeholder="상세주소" aria-label="Username" aria-describedby="basic-addon9" name="memberAddress3" id="memberAddress3">
+          </div>
+
+
+            <div class="mt-4">
+                <div class="d-flex justify-content-center">
+                    <div class="col-3"></div>
+                    <div class="col-3">
+                        <div class="form-check ms-4 ">
+                            <input class="form-check-input gender " type="radio" name="gender" value="남성" id="flexRadioDefault1" checked   >
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                남성
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-check ms-4">
+                            <input class="form-check-input gender " type="radio" name="gender" value="여성" id="flexRadioDefault2"    >
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                여성
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+
+
+            </div>
+
+
+
+            <div class="text-center m-3">
+                <button type="submit" id="send" class="mt-4 w-100" style="background-color:#337cbc;color:white;border:1px solid #337cbc">회원 가입</button>
+            </div>
+
+
+      </div>
+
+      </div>
+
+
+
+    </form>
+</div>
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script  th:inline="javascript">
+
+
+let memberIdChk = false
+let smsChk = false
+
+
+$('#findAddressBtn').click(function(e){
+
+  e.preventDefault()
+
+
+ new daum.Postcode({
+        oncomplete: function(data) {
+
+            document.getElementById("address").value = data.zonecode;
+            document.getElementById("memberAddress2").value = data.roadAddress;
+
+        }
+    }).open();
+
+
+})
+
+
+$('#memberIdCheck').click(function(e){
+
+    let memberId = $('#memberId').val()
+
+    if(memberId.length == 0){
+        alert('아이디를 입력해주세요.')
+        return;
+    }
+
+        $.ajax({
+
+        type:'GET',
+        dataType : 'text',
+        url : '/memberIdCheck',
+        data : {
+            memberId : memberId
+
+        },success:function(data){
+
+            if(data == 'true'){
+                alert('이미 존재하는 아이디 입니다.')
+                memberIdChk = 'false'
+            }else{
+                alert('사용 가능한 아이디 입니다.')
+                memberIdChk = 'true'
+            }
+
+        },error:function(data){
+            alert('실패')
+        }
+
+
+        })
+
+})
+
+$('#sendSMS').click(function(){
+
+  let phoneNumber = $('#phone').val()
+
+    if(phoneNumber.length == 13){
+
+    $.ajax({
+        type:'GET',
+        dataType:'text',
+        url: '/sendSMS',
+        data : {
+            phoneNumber : phoneNumber
+        },
+        success:function(data){
+            alert('인증번호가 전송되었습니다.')
+
+            $('#smsChkBtn').click(function(){
+                let smsData = $('#smsData').val()
+                if(data == smsData){
+                    alert('인증 되었습니다.')
+                    smsChk = true
+                }else{
+                    alert('인증 실패')
+                    smsChk = false
+                }
+
+            })
+
+
+        },
+        error:function(e){
+            alert('오류')
+        }
+    })
+
+    }else{
+        alert('번호를 제대로 입력해주세요.')
+    }
+
+})
+
+
+
+$('#send').click(function(e){
+
+  e.preventDefault()
+
+  let memberId = $('#memberId').val()
+  let pswd = $('#pswd').val()
+  let memberName = $('#memberName').val()
+  let email = $('#email').val()
+  let phone = $('#phone').val()
+  let age = $('#age').val()
+
+  let address = $('#address').val() + ' ' + $('#memberAddress2').val() + ' ' + $('#memberAddress3').val()
+  let gender = $('input[name="gender"]:checked').val();
+
+
+    if(memberIdChk == 0){
+        alert('아이디 중복 검사를 해주세요')
+        return;
+    }
+
+    if(smsChk == 0){
+        alert('SMS 인증을 해주세요')
+        return;
+    }
+
+
+
+  let arr = [memberId,pswd,memberName,email,phone,age,gender]
+
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i].length == 0){
+            if(i == 0){
+                alert('아이디를 입력해주세요.')
+            }else if(i ==1 ){
+                alert('비밀번호를 입력해주세요.')
+            }else if(i == 2){
+                alert('이름을 입력해주세요.')
+            }else if(i == 3){
+                alert('이메일을 입력해주세요.')
+            }else if(i == 4){
+                alert('전화번호를 입력해주세요.')
+            }else if(i == 5){
+                 alert('나이를 입력해주세요.')
+            }else if(i == 6){
+                 alert('성별을 입력해주세요.')
+            }
+            return;
+        }
+    }
+
+    if(address.length == 2){
+        alert('주소를 입력해주세요.')
+        return;
+    }
+
+
+  $('#address').val(address)
+
+
+    alert('회원가입 되었습니다.')
+
+    $('#fm').submit()
+
+})
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+<head>
+  <meta charset="utf-8" />
+</head>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+  <div class="container">
+    <div class="align-items-center flex-column">
+      <div class="text-center mt-3">
+          <span class="fw-bold">내 계좌</span>
+      </div>
+
+      <hr>
+
+
+      <div>
+        <ul class="list-group" id="MyAccount">
+
+
+        </ul>
+
+      </div>
+
+      <hr>
+
+
+
+
+
+
+    </div>
+
+  </div>
+
+
+
+
+</body>
+
+  <script
+          src="https://code.jquery.com/jquery-3.7.0.js"
+          integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+          crossorigin="anonymous"></script>
+  <script th:inline="javascript">
+
+
+
+
+
+class MyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: []
+        };
+
+        this.addComment = this.addComment.bind(this);
+    }
+
+    componentDidMount() {
+        this.getData(1);
+    }
+
+
+
+
+    getData(page){
+
+  var urlParams = new URLSearchParams(window.location.search);
+  var accountNumber = urlParams.get('accountNumber');
+
+
+        $.ajax({
+            url: '/GetAccount',
+            method: 'GET',
+            data: {
+              page : page,
+              accountNumber : accountNumber
+
+            },
+             async: false,
+            success: (data) => {
+                this.addComment(data);
+            },
+            error: (xhr, status, err) => {
+                alert('실패');
+            }
+        });
+
+    }
+
+
+
+    addComment(comment) {
+        this.setState({ data: [] });
+
+        this.setState(prevState => ({
+            data: [...prevState.data, comment]
+        }));
+    }
+
+
+ render() {
+
+  let elements = [];
+
+
+   if (!this.state.data[0] || this.state.data[0].length === 0) {
+   let element = React.createElement( 'li',{ className: "list-group-item mb-1 d-flex justify-content-center align-items-start", style: { backgroundColor: "#fff" }, key: 1 },
+        React.createElement('div',{ className: "align-items-start flex-column" },
+        React.createElement('div',{ className: "d-flex justify-content-center" },
+       React.createElement('div',{ className: "col-12 badge rounded-pill", style: { backgroundColor: "#337cbc" } },
+                    React.createElement('span',null,  "연결된 계좌가 없습니다."  ))
+            )
+            )
+        )
+       elements.push(element);
+       return elements;
+    }
+
+
+  let data = this.state.data[0];
+  console.log(data)
+
+
+for (let index = 0; index < data.length; index++) {
+    let item = data[index];
+
+    let element = React.createElement(
+        "li",
+        { key: index, className: "list-group-item MyAccountInfo",'data-value': `${item.accountNumber}` },
+        React.createElement(
+            "div",
+            { className: "align-items-start flex-column" },
+            React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "span",
+                    null,
+                    `${item.accountProductName}`
+                ),
+                React.createElement(
+                    "small",
+                    { style: { color: "gray" } },
+                    ` (${item.accountNumber})`
+                )
+            ),
+            React.createElement(
+                "div",
+                null,
+               `에금액 : ${item.balance.toLocaleString()}원`
+            ),
+            React.createElement(
+                "div",
+              { style: { color: "gray" } },
+             `${item.createDate}`
+            ),
+
+
+React.createElement(
+ "div",
+  {
+   id : `${item.accountNumber}`,
+   style: { display: 'none' },
+    className: "accountPasswordDiv"
+
+   },
+  React.createElement(
+  "div",
+  {
+   id : `${item.accountNumber}`,
+   style: { display: 'none' },
+   className: "d-flex justify-content-center"
+   },
+  React.createElement(
+    "div",
+    { className: "col-9" },
+    React.createElement(
+      "div",
+      { className: "m-3 input-group" },
+      React.createElement(
+        "span",
+        {
+          className: "input-group-text fw-bold",
+          id: "basic-addon4",
+          style: { backgroundColor: "#337cbc", color: "white" }
+        },
+        "비밀번호"
+      ),
+      React.createElement(
+        "input",
+        {
+          type: "password",
+          className: `form-control ${item.accountNumber}`,
+          maxLength: 4,
+          placeholder: "비밀번호 4자리",
+          "aria-label": "Username",
+          "aria-describedby": "basic-addon4"
+        },
+        null
+      )
+    )
+  ),
+  React.createElement(
+    "div",
+    { className: "col-3 m-3" },
+     React.createElement(
+        "span",
+        {
+          className: "input-group-text text-center fw-bold accountPasswordBtn",
+          style: { backgroundColor: "#337cbc", color: "white" },
+           'data-value': `${item.accountNumber}`
+        },
+        "입력완료"
+      ),
+  )
+)
+)
+
+
+
+
+
+
+        )
+    );
+
+    elements.push(element);
+}
+
+
+  return elements;
+  }
+
+}
+
+
+
+
+$(document).ready(function() {
+
+
+    const myComponentInstance = ReactDOM.render(
+        React.createElement(MyComponent, null),
+        document.getElementById('MyAccount')
+    );
+
+
+
+
+  $(document).on('click','.accountPasswordBtn' ,function(e){
+    let dataValue = e.target.getAttribute('data-value');
+    let accountPassword =  $('.'+ dataValue).val()
+
+     $.ajax({
+          type : 'GET',
+          url : '/AccountPswdChk',
+          dataType : 'text',
+          data : {
+              accountNumber : dataValue,
+              accountPswd : accountPassword,
+
+          },success:function(data){
+            if(data == 'true'){
+                window.opener.location.href = "/accountInfo?accountNumber=" + dataValue; // 'your_url'을 원하는 URL로 변경하세요.
+                window.close();
+            }else{
+              alert('비밀번호가 맞지 않습니다.')
+            }
+
+          },error:function(data){
+            alert('실패')
+          }
+
+
+        })
+
+
+  })
+
+
+
+  $(document).on('click','.MyAccountInfo' ,function(e){
+
+
+  let dataValue = e.currentTarget.getAttribute('data-value');
+
+  $(".accountPasswordDiv").css("display", "none");
+  $("#" + dataValue).css("display", "block");
+
+
+
+
+  })
+
+
+});
+
+
+
+
+
+
+  </script>
+
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<style>
+
+.mainHover:hover {
+    background-color: #337cbc;
+    color: white;
+}
+
+
+</style>
+<body>
+
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<hr>
+
+
+<div class="container">
+
+    <div class="w-100">
+        <div class="d-flex justify-content-center">
+
+            <div class="col-12 mt-5">
+
+                <div class="align-items-start flex-column">
+                    <div>
+                        <div class="d-flex justify-content-center" style="height:150px">
+                            <div th:if="${#authentication.principal} == 'anonymousUser'" class="col-4 mainHover" style="border: 2px solid black;border-radius:5%" id="login">
+                                <div class="align-items-center flex-column text-center registerBtn">
+                                    <div style="height:60px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">회원가입</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div th:unless="${#authentication.principal} == 'anonymousUser'" class="col-4 mainHover" style="border: 2px solid black;border-radius:5%" id="MyAccount">
+                              <div class="align-items-center flex-column text-center">
+                                  <div style="height:60px">
+
+                                  </div>
+                                  <div>
+
+                                  </div>
+                                  <div class="mt-1">
+                                      <h5 class="fw-bold">나의 계좌</h5>
+                                  </div>
+
+                              </div>
+                            </div>
+
+
+                            <div class="col-4 ms-2 mainHover" id="SavingPage"  style="border: 2px solid black;border-radius:5%">
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:55px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">적금</h5>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div class="col-4 ms-2 mainHover" style="border: 2px solid black;border-radius:5%">
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:55px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">체크카드</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-center" style="height:150px">
+                            <div class="col-4 mt-2 mainHover" style="border: 2px solid black;border-radius:5%" id="fakeAccountReport">
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:50px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">사기 계좌 신고</h5>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div class="col-4 ms-2 mt-2 mainHover" style="border: 2px solid black;border-radius:5%">
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:55px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">대출</h5>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div  th:if="${adminChk} != 'true' " class="col-4 ms-2 mt-2 mainHover" style="border: 2px solid black;border-radius:5%">
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:50px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">문의</h5>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div  th:unless="${adminChk} != 'true' " id="adminPage" class="col-4 ms-2 mt-2 mainHover" style="border: 2px solid black;border-radius:5%">
+
+                                <div class="align-items-center flex-column text-center">
+                                    <div style="height:50px">
+
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div class="mt-1">
+                                        <h5 class="fw-bold">관리</h5>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+        <hr>
+        <div class=" d-flex justify-content-center mt-2 mb-2 text-center">
+            <div class="col-2 mt-3" style="border-right:1px solid black">
+                <img src="imgs/mark1.png" width="110px">
+            </div>
+
+            <div class="col-2 mt-3"  style="border-right:1px solid black">
+                <img src="imgs/mark2.jpg" width="100px">
+            </div>
+
+            <div class="col-2 mt-1"  style="border-right:1px solid black">
+                <img src="imgs/mark3.png" width="100px">
+            </div>
+
+            <div class="col-2 mt-1" style="border-right:1px solid black">
+
+                <img src="imgs/mark5.jpg" width="140px">
+
+            </div>
+
+            <div class="col-4" >
+                <form action="/user/login" method="post"  th:if="${#authentication.principal} == anonymousUser">
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <div clas="col-8 mt-2">
+                            <div class="align-items-center flex-column">
+
+                                <div class="ms-3">
+                                    <span class="fw-bold">아이디 :</span>
+                                    <input type="text" name="memberId" style="border:0px; border-bottom:1px solid black">
+                                </div>
+
+                                <div class="mt-4">
+                                    <span class="fw-bold">비밀번호 :</span>
+                                    <input type="password" name="pswd" style="border:0px; border-bottom:1px solid black">
+                                </div>
+
+                                <div class="mt-1 ms-3" th:If="${ErrorMessage} != null">
+                                    <span class="fw-bold" style="color:red">아이디 혹은 비밀번호가 <br> 잘못되엇습니다. </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-4 ms-2">
+                            <div class="align-items-center flex-column">
+                                <div>
+                                    <button type="submit" class="w-100 btn btn-primary fw-bold" style="background-color:#337cbc;border:1px solid #337cbc">로그인</button>
+                                </div>
+                                <div class="mt-1">
+                                    <button type="button" class="w-100 btn btn-primary fw-bold registerBtn" style="background-color:#337cbc;border:1px solid #337cbc">회원가입</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+
+
+                <div class="d-flex justify-content-center mt-3" th:unless="${#authentication.principal} == anonymousUser">
+                    <div clas="col-8">
+                        <div class="align-items-center flex-column">
+                            <div>
+                                <span th:text="|${#authentication.principal.username} 님 안녕하세요|"> </span>
+
+                            </div>
+                            <div class="mt-3">
+                                <button type="button" class="fw-bold btn btn-primary " style="background-color:#337cbc;border:1px solid #337cbc"><a href="/logout" style="text-decoration:none;color:white">로그아웃</a></button>
+                                <button type="button"  class="fw-bold btn btn-primary " style="background-color:#337cbc;border:1px solid #337cbc"> <a href="/CreateAccount"  style="text-decoration:none;color:white"> 계좌 생성</a></button>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="align-items-center flex-column">
+                            <div>
+                            </div>
+
+                            <div class="mt-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    <hr>
+
+    <div style="border:2px solid #337cbc; height:200px; background : #337cbc; color:white;border-radius:1%" id="fakeAccountSearch">
+        <div class="d-flex justify-content-center mt-5">
+            <div class="col-3">
+
+            </div>
+            <div class="col-6 mt-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+                <span class="fs-1 fw-bold ms-3">사기 의심 계좌 조회 </span>
+            </div>
+            <div class="col-3">
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <div class="col-3 align-items-center flex-column text-center" style="border-right: 1px solid gray">
+            <div>
+                <span style="color:gray" class="fw-bold">오늘 사기 에방 수</span>
+                <hr>
+            </div>
+            <div>
+                <h3 class="fw-bold" style="color :#337cbc">15,700 </h3>
+            </div>
+        </div>
+
+        <div class="col-3 align-items-center flex-column text-center" style="border-right: 1px solid gray">
+                <div>
+                    <span style="color:gray" class="fw-bold">누적 사기 예방 수</span>
+                    <hr>
+                </div>
+                <div>
+                    <h3 class="fw-bold" style="color:#337cbc">36,009,946 </h3>
+                </div>
+            </div>
+
+        <div class="col-3 align-items-center flex-column text-center" style="border-right: 1px solid gray">
+                <div>
+                    <span style="color:gray" class="fw-bold">  전체 피해 사례 수 </span>
+                    <hr>
+                </div>
+                <div>
+                    <h3 class="fw-bold" style="color:#337cbc">2,022,215 </h3>
+                </div>
+            </div>
+
+        <div class="col-3 align-items-center flex-column text-center">
+                <div>
+                    <span style="color:gray" class="fw-bold"> 피해 발생 사이트 수 </span>
+                    <hr>
+                </div>
+                <div>
+                    <h3 class="fw-bold" style="color : #337cbc"> 20,609 </h3>
+                </div>
+            </div>
+
+    </div>
+
+
+
+
+</div>
+
+
+</div>
+<div th:replace="fragments/footer::footer"></div>
+
+
+
+</body>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+
+
+    $('#MyAccount').click(function(){
+
+        window.open("MyAccount.html", "내 게좌", "width=700, height=600, left=400, top=100");
+
+
+    })
+
+    $('.registerBtn').click(function(){
+         location.href="/registerPage"
+    })
+
+    $('#SavingPage').click(function(){
+        location.href='/SavingPage'
+    })
+
+    $('#adminPage').click(function(){
+        location.href='/adminPage'
+    })
+
+    $('#fakeAccountSearch').click(function(){
+
+        if([[${#authentication.principal}]] != 'anonymousUser'){
+            location.href='/accountSearch'
+        }else{
+            alert('로그인이 필요한 서비스 입니다.')
+        }
+    })
+
+
+    $('#fakeAccountReport').click(function(){
+
+        if([[${#authentication.principal}]] != 'anonymousUser'){
+            location.href='/accountReport'
+        }else{
+            alert('로그인이 필요한 서비스 입니다.')
+        }
+
+
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<div class="container">
+
+
+    <hr>
+
+    <div class="d-flex justify-content-center">
+        <div class="col-4">
+
+        </div>
+
+        <div class="col-8 mt-3 ms-4">
+            <div class="w-75" style="border:2px solid black">
+
+
+                    <div class="align-items-center flex-column">
+
+                        <div class="mt-3">
+                            <span class=" mt-2 mb-2 ms-2 fw-bold">출금 계좌 정보</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-end">
+                            <div class="col-7">
+                                <div class="m-3 input-group">
+                                    <span class="input-group-text fw-bold" id="basic-addon5" style="background-color:#337cbc;color:white;">출금 계좌 번호</span>
+                                    <input type="text" class="form-control" readonly th:value="${accountDTO.accountNumber}" aria-label="Username" aria-describedby="basic-addon5">
+                                </div>
+                            </div>
+                            <div class="col-5">
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+                        <div class="d-flex justify-content-end">
+                            <div class="col-6">
+                                <div class="m-3 input-group">
+                                    <span class="input-group-text fw-bold" id="basic-addon4" style="background-color:#337cbc;color:white;">비밀번호</span>
+                                    <input type="password" class="form-control" maxlength="4"  placeholder="비밀번호 4자리" aria-label="Username" aria-describedby="basic-addon4"  name="sendAccountPswd" id="sendAccountPswd">
+                                </div>
+                            </div>
+                            <div class="col-6">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-start">
+
+                            <div class="col-6">
+                                <div class="m-3 mb-1 input-group">
+
+                                    <span class="input-group-text fw-bold" id="basic-addon2" style="background-color:#337cbc;color:white;">이체 할 금액</span>
+                                    <input type="text" class="form-control" maxlength="15"  placeholder="직접 입력" aria-label="Username"  aria-describedby="basic-addon2" name="sendBalance" id="sendBalance">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <div class="d-flex justify-content-start ms-4">
+                    <div class="col-1">
+                    </div>
+                    <div class="col-11 ms-4 ">
+                        <span style="color:gray" th:text="|이체 가능한 금액 : ${#numbers.formatDecimal(accountDTO.balance, 0, 'COMMA', 0, 'POINT')}원|"> </span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mt-2 ms-5">
+                    <div class="col-1 ms-2" >
+                        <span class="badge sendMoneyBtn" data-value="50000" style="background-color:#337cbc;color:white'">5만원</span>
+                    </div>
+                    <div class="col-1 ms-1" >
+                        <span class="badge sendMoneyBtn" data-value="100000" style="background-color:#337cbc;color:white'">10만원</span>
+                    </div>
+                    <div class="col-1 ms-2" >
+                        <span class="badge sendMoneyBtn" data-value="500000" style="background-color:#337cbc;color:white'">50만원</span>
+                    </div>
+                    <div class="col-1 ms-2" >
+                        <span class="badge sendMoneyBtn" data-value="1000000" style="background-color:#337cbc;color:white'">100만원</span>
+                    </div>
+                    <div class="col-1 ms-3">
+                        <span class="badge sendMoneyBtn" th:data-value="${accountDTO.balance}" style="background-color:#337cbc;color:white'">전체</span>
+                    </div>
+                    <div class="col-7">
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+
+                <div>
+                    <span class=" mt-2 mb-2 ms-2 fw-bold">입금 계좌 정보</span>
+                </div>
+
+                <hr>
+
+
+                <div class="d-flex justify-content-center">
+                    <div th:each="item, interStat : ${accountProductList}" class="ms-4">
+                        <div class="col-12 badge SelectAccount mt-3  " th:style="${interStat.index == 0} ? 'border:2px solid black;height:auto; background-color:#337cbc;color:white' : 'border:2px solid black;height:auto;color:black '" th:data-value="${item.accountProductName}">
+                            <span class="fw-bold" th:text="${item.accountProductName}">온라인 보통 예탁금</span>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-3">
+                            <div class="col-6">
+                                <div class="m-3 input-group">
+                                    <span class="input-group-text fw-bold" id="basic-addon3" style="background-color:#337cbc;color:white;">예금주</span>
+                                    <input type="text" class="form-control" maxlength="16"  placeholder="예금주" aria-label="Username" aria-describedby="basic-addon3" name="receiveMemberName" id="receiveMemberName">
+                                </div>
+                            </div>
+                            <div class="col-6">
+
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end ">
+                            <div class="col-6">
+                                <div class="m-3 mt-2  input-group mt-1">
+                                    <span class="input-group-text fw-bold" id="basic-addon1" style="background-color:#337cbc;color:white;">계좌번호</span>
+                                    <input type="text" class="form-control" maxlength="19"  placeholder="계좌번호" aria-label="Username" aria-describedby="basic-addon1" name="receiveAccountNumber" id="receiveAccountNumber">
+                                </div>
+                            </div>
+                            <div class="col-6">
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+
+
+                        <input type="hidden" id="receiveAccountName" name="receiveAccountName" value="온라인 보통 예탁금">
+
+
+                        <div class="m-1 ms-0 text-center">
+                            <button type="button" style="background-color:#337cbc;border:1px solid #337cbc;color:white"  id = "btn" class="btn btn-secondary m-3 ms-0">이체하기</button>
+                        </div>
+
+
+                    </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+</body>
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+$('#sendBalance').on('keyup', function() {
+    var value = $(this).val();
+    value = value.replace(/[^0-9]/g, ''); // remove non-numeric characters
+
+    if (value !== '') { // check if the value is not an empty string
+        value = parseInt(value, 10); // convert to integer
+        $(this).val(value.toLocaleString()); // format and set the new value
+    }
+});
+
+
+
+
+ $(document).on('click','.sendMoneyBtn' ,function(e){
+
+    let sendMoney =  $(e.target).data('value');
+    let accountMoney = [[${accountDTO.balance}]]
+
+    if(sendMoney > accountMoney){
+
+        $('#sendBalance').val(accountMoney.toLocaleString())
+        return;
+    }
+
+       $('#sendBalance').val(sendMoney.toLocaleString())
+
+ })
+
+ $(document).on('click','.SelectAccount' ,function(e){
+
+
+       $('.SelectAccount').each(function() {
+                  $(this).css({
+                  'background-color': 'white',
+                  'color': 'black'
+              });
+          });
+
+      let SelectAccount = $(e.currentTarget).data('value');
+
+      $("#receiveAccountName").val(SelectAccount);
+
+      $(e.currentTarget).css({
+            'background-color': '#337cbc',
+            'color': 'white'
+        });
+
+     })
+
+
+
+$('#btn').click(function(){
+
+    // 검증 로직
+
+      let sendAccountNumber =  [[${accountDTO.accountNumber}]]
+        let sendAccountName = [[${accountDTO.accountProductName}]]
+        let sendAccountPswd = $('#sendAccountPswd').val()
+
+        let sendBalance = $('#sendBalance').val().replace(/,/g, '');
+        let receiveAccountName =  $('#receiveAccountName').val()
+        let receiveMemberName = $('#receiveMemberName').val()
+        let receiveAccountNumber = $('#receiveAccountNumber').val()
+
+
+
+
+
+      $.ajax({
+
+
+        type : 'GET',
+        url : '/sendCheck',
+        dataType : 'text',
+        data : {
+            sendAccountNumber : sendAccountNumber,
+            sendAccountName : sendAccountName,
+            sendAccountPswd : sendAccountPswd,
+            sendBalance : sendBalance,
+
+            receiveAccountName : receiveAccountName,
+            receiveMemberName : receiveMemberName,
+            receiveAccountNumber : receiveAccountNumber,
+
+        },success:function(data){
+
+
+          if(data == '정상'){
+                $.ajax({
+
+                type : 'PUT',
+                url : '/UpdateAccount',
+                dataType : 'text',
+                data : {
+                    sendAccountNumber : sendAccountNumber,
+                    sendAccountName : sendAccountName,
+                    sendAccountPswd : sendAccountPswd,
+                    sendBalance : sendBalance,
+
+                    receiveAccountName : receiveAccountName,
+                    receiveMemberName : receiveMemberName,
+                    receiveAccountNumber : receiveAccountNumber,
+
+                },success:function(data){
+
+                  if(data){
+                    alert('입금 처리 되었습니다.')
+                    location.href='/accountInfo?accountNumber=' + sendAccountNumber
+
+                }else{
+                    alert("잠시 후에 다시 시도해주세요.")
+                  }
+
+                },error:function(data){
+                  alert('실패')
+                }
+
+
+              })
+
+        }else{
+            alert(data)
+          }
+
+        },error:function(data){
+          alert('실패')
+        }
+
+
+      })
+
+})
+
+
+
+</script>
+</html>

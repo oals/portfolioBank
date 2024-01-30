@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<hr>
+
+<div class="container">
+
+<div class="d-flex justify-content-center">
+    <div class="col-4">
+        <div class="align-items-center flex-column">
+            <div th:each="item, interStat : ${accountProductList}">
+                <div class="badge SelectAccount mt-4 text-wrap " th:style="${interStat.index == 0} ? 'border:2px solid black;height:100px;width:400px; background-color:#337cbc;color:white' : 'border:2px solid black;height:100px;width:400px;color:black '" th:data-value="${item.accountProductName}">
+                <div class="align-items-start flex-column " >
+                        <div>
+                            <span class="fw-bold" th:text="${item.accountProductName}">온라인 보통 예탁금</span>
+                        </div>
+                        <div class="mt-3">
+                            <span th:text="${item.productIntroduction}">거래대상자, 금액에 제한없이 언제나 입출금이 가능한 수시입출금식 예금</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="col-8 ms-5"  >
+
+        <div class="align-items-center flex-column">
+            <div style="overflow:scroll; height:450px;">
+
+                <h3 id="accountProductName" style="color: #337cbc" class="fw-bold mt-3 mb-1"></h3>
+
+                <hr>
+
+                <dl class="row mt-3" >
+                    <dt class="col-sm-12 fw-bold" style="color:#337cbc">▪ 상품 소개</dt>
+                    <dd class="col-sm-12" id="productIntroduction" >인터넷뱅킹 출금계좌 통장 개설 시 출금계좌로 등록하여 인터넷·스마트뱅킹을 편리하게 이용 가능</dd>
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 가입대상 </dt>
+                    <dd class="col-sm-12" id="eligibleCustomers"> 가입대상자 : 만 18세이상 실명의 개인(금고별 1인 1계좌) </dd>
+
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 이율  </dt>
+                    <dd class="col-sm-12" id="interestRate">  가입당시 또는 변경 시 금고에 고시된 이율 적용 </dd>
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 이자지급 </dt>
+                    <dd class="col-sm-12" id="interestPayment"> 매월 지급 </dd>
+
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 부가서비스 </dt>
+                    <dd class="col-sm-12" id="additionalServices"> 수수료 면제조건 </dd>
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 특징 </dt>
+                    <dd class="col-sm-12" id="features"> 이자계산방법 : 잔액구간별 이자계산 방식 </dd>
+
+                    <dt class="col-sm-12 fw-bold mt-4"  style="color:#337cbc">▪ 예금자 보호여부 </dt>
+                    <dd class="col-sm-12" id="depositorProtection"> 이 예금은 새마을금고법에 따라 본 새마을금고에 있는 귀하의 모든 예금보호대상 금융상품의 원금과 소정의 이자를 합하여 1인당 “최고
+                        5천만원까지”
+                        새마을금고중앙회 예금자보호준비금에 의해 보호되며, 5천만원 초과 금액에 대해서는 보호되지 않습니다.
+                    </dd>
+
+
+
+
+
+                </dl>
+            </div>
+
+            <div>
+                <div class="w-100" >
+
+                    <form action="/accountRegister" method="post" id="fm">
+
+                        <div class="align-items-center flex-column">
+
+                            <div class="d-flex justify-content-end">
+                                <div class="col-1">
+
+                                </div>
+                                <div class="col-9">
+                                    <div class="m-3 mt-2 input-group mt-4">
+                                        <span class="input-group-text fw-bold" style="background-color:#337cbc;color:white" id="phoneNum">휴대폰 번호</span>
+                                        <input type="text" class="form-control" maxlength="13"  placeholder="010-0000-0000" aria-label="Username" aria-describedby="phoneNum" id="phone">
+                                        <button style="background-color:#337cbc;color:white;border: 1px solid #337cbc;" type="button" class="fw-bold " id="sendSMS">인증번호 전송</button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="d-flex justify-content-end">
+                                <div class="col-1">
+
+                                </div>
+                                <div class="col-9 ">
+                                    <div class="m-3 mt-2 input-group mt-1">
+                                        <span class="input-group-text fw-bold" style="background-color:#337cbc;color:white"  id="authenticationNum">인증번호</span>
+                                        <input type="text" id="smsData" class="form-control" maxlength="6"  placeholder="000000" aria-label="Username" aria-describedby="authenticationNum" name="authentication">
+                                        <button style="background-color:#337cbc;color:white;border: 1px solid #337cbc;" type="button" id="smsChkBtn" class="fw-bold">인증번호 확인</button>
+                                    </div>
+
+                                </div>
+                                <div class="col-2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <div class="col-1">
+
+                                </div>
+                                <div class="col-9">
+                                    <div class="m-3 mt-2  input-group mt-3">
+                                        <span class="input-group-text fw-bold" style="background-color:#337cbc;color:white"  id="basic-addon2">사용할 비밀번호 4자리</span>
+                                        <input type="text" class="form-control" maxlength="4"  placeholder="비밀번호 4자리" aria-label="Username" aria-describedby="basic-addon2" name="accountPswd" id="accountPswd">
+                                    </div>
+
+                                </div>
+                                <div class="col-2">
+
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <div class="col-1">
+
+                                </div>
+                                <div class="col-9">
+                                    <div class="m-3 mt-2 input-group mt-1">
+                                        <span class="input-group-text fw-bold" style="background-color:#337cbc;color:white"  id="basic-addon3">한번 더 입력해주세요.</span>
+                                        <input type="text" class="form-control" maxlength="4"  placeholder="비밀번호 4자리" aria-label="Username" aria-describedby="basic-addon3" name="ReAccountPswd" id="ReAccountPswd">
+                                    </div>
+                                </div>
+                                <div class="col-2">
+
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-center">
+                                <button type="button" class="fw-bold w-100 m-4 rounded-pill"  style="background-color:#337cbc;color:white;border: 1px solid #337cbc; "id="accountRegisterBtn">계좌 생성</button>
+                            </div>
+
+
+
+
+                        </div>
+
+
+                        <input type="hidden" class="accountProductName" name="accountProductName" value="온라인 보통 예탁금">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+</div>
+
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+
+selectAccountInfo('온라인 보통 예탁금')
+
+let smsChk = false;
+
+
+ $(document).on('click','.SelectAccount' ,function(e){
+
+       $('.SelectAccount').each(function() {
+                  $(this).css({
+                  'background-color': 'white',
+                  'color': 'black'
+              });
+          });
+
+      let SelectAccount = $(e.currentTarget).data('value');
+
+      $(".accountProductName").val(SelectAccount);
+
+      $(e.currentTarget).css({
+            'background-color': '#337cbc',
+            'color': 'white'
+        });
+
+
+
+        selectAccountInfo(SelectAccount)
+
+
+
+     })
+
+
+
+  function selectAccountInfo(accountProductName){
+
+         $.ajax({
+            type:"GET",
+            url:"/AccountProductInfo",
+            dataType : 'json',
+            data: {
+                accountProductName : accountProductName,
+
+            },
+            success:function(data){
+
+                $('#additionalServices').text(data.additionalServices)
+                $('#productIntroduction').text(data.productIntroduction)
+                $('#eligibleCustomers').text(data.eligibleCustomers)
+                $('#additionalServices').text(data.additionalServices)
+                $('#features').text(data.features)
+                $('#interestPayment').text(data.interestPayment)
+                $('#depositorProtection').text(data.depositorProtection)
+                $('#interestRate').text(data.interestRate)
+                $('#accountProductName').text(data.accountProductName)
+
+
+
+
+
+            },
+            error:function(e){
+                alert('잠시 후에 다시 시도해주세요.')
+            }
+           })
+
+        }
+
+
+
+
+
+
+
+$('#sendSMS').click(function(){
+
+  let phoneNumber = $('#phone').val()
+
+    if(phoneNumber.length == 13){
+
+    $.ajax({
+        type:'GET',
+        dataType:'text',
+        url: '/sendSMS',
+        data : {
+            phoneNumber : phoneNumber
+        },
+        success:function(data){
+            alert('인증번호가 전송되었습니다.')
+
+            $('#smsChkBtn').click(function(){
+                let smsData = $('#smsData').val()
+                if(data == smsData){
+                    alert('인증 되었습니다.')
+                    smsChk = true
+                }else{
+                    alert('인증 실패')
+                    smsChk = false
+                }
+
+            })
+
+
+        },
+        error:function(e){
+            alert('오류')
+        }
+    })
+
+    }else{
+        alert('번호를 제대로 입력해주세요.')
+    }
+
+})
+
+
+
+
+
+    $('#accountRegisterBtn').click(function(e){
+
+    e.preventDefault()
+
+
+    let accountProductName = $(".accountProductName").val()
+    let accountPswd = $('#accountPswd').val()
+    let rePassword = $('#ReAccountPswd').val()
+
+    if(smsChk == false){
+        alert('휴대폰 인증이 필요합니다.')
+        return;
+    }
+
+
+    if(accountPswd.length != 4){
+        alert('사용할 비밀번호 4자리를 입력해주세요.')
+        return;
+    }
+
+     if(rePassword.length != 4){
+        alert('비밀번호 4자리를 한번 더 입력해주세요.')
+        return;
+    }
+
+
+    if(accountPswd != rePassword ){
+        alert('비밀번호가 일치하지 않습니다.')
+        return;
+    }
+
+
+
+
+    $.ajax({
+        type: 'GET',
+        url : '/accountProductRegisterChk',
+        dataType: 'text',
+        data : {
+            accountProductName : accountProductName
+        },
+        success:function(data){
+            if(data == 'true'){
+                   alert('계좌가 개설 되었습니다.')
+                   let form = $('#fm')
+                   form.submit()
+
+            }else{
+                alert('이미 해당 상품으로 생성된 계좌가 존재합니다.')
+            }
+        },
+        error:function(){
+           alert('오류')
+
+        }
+
+    })
+
+
+
+
+
+})
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<hr>
+  <div class="container">
+<div class="d-flex justify-content-center">
+
+      <div class="card ">
+        <span class="text-center mt-2"><strong>적금 가입</strong></span>
+        <hr>
+
+        <div class="d-flex align-items-start flex-column mb-3">
+            <div class="m-2">
+              <div class="card">
+                (만 14세 미만 아동의 Q-CODE 입력은 법정대리인의 동의가 필요합니다.)<br>
+                검역정보 사전입력 시스템 이용약관, 개인정보 수집 · 이용 동의서, 고유식별 정보의 처리 안내, <br>
+                민감정보 처리 내역 동의서에 모두 동의합니다.<br>
+                모든 서비스의 이용조건 및 절차에 관한 사항과 기타 필요한 사항을 정함을 목적으로 합니다.<br>
+                </div>
+              <div class="form-check">
+                <input class="form-check-input chkBox" type="checkbox"  id="chkBox1" >
+                <label class="form-check-label" for="chkBox1" >
+                  동의
+                </label>
+              </div>
+
+            </div>
+
+            <div class="m-2">
+              <div class="card">
+                1. "이용자"라 함은 시스템에 접속하여 이 약관에 따라 서비스를 받는 사람을 말합니다.<br>
+                2. "입력"이라 함은 제공하는 입력양식에 해당 정보를 기입하고 본 약관에 동의한다.<br>
+                3.“검역정보”라 함은 이용자가 입력한 여권 정보, PCR검사 정보, 예방접종 정보 등을 말합니다.<br>
+                4. 본 약관에서 정의하지 않는 용어는 개별서비스에 대한 별도 약관 및 규정에서 정의합니다.<br>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input chkBox" type="checkbox" value="" id="chkBox2"  >
+                <label class="form-check-label" for="chkBox2" value="false">
+                  동의
+                </label>
+              </div>
+            </div>
+
+        </div>
+
+
+        <div class="m-2 mt-0 text-center">
+          <input class="form-check-input" type="checkbox"  id="AllChkBox" >
+          <label class="form-check-label" for="AllChkBox" >
+            전체동의
+          </label>
+        </div>
+
+        <div class="m-2 text-center">
+
+          (<span name="product_name"> [[${product_name}]]</span> )을(를) 선택하셨습니다.
+        </div>
+
+
+        <div class="m-3 mb-2 col-12 w-75 m-auto">
+          <select class="form-select mb-3" name="accountNumber"  id="accountNumber" aria-label="Default select example">
+            <option th:each="data : ${accountDTO.list}"
+                    th:value="${data.accountNumber}">[[${data.accountName}]]([[${data.accountNumber}]]) </option>
+          </select>
+          <div>
+            연결하실 계좌를 선택해주세요.
+          </div>
+        </div>
+
+
+
+        <div class="m-1 col-12 w-100 text-center">
+          <button type="button" id="btn" class="btn btn-secondary">가입하기</button>
+        </div>
+
+
+        <input type="hidden" name="memberId" id="memberId" th:value="${#authentication.principal.username}">
+
+
+    </div>
+
+
+</div>
+  </div>
+
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+let chkBoxToggle = 0;
+
+ $('#AllChkBox').click(function(e){
+ console.log(chkBoxToggle)
+  if(chkBoxToggle == 0){
+
+    $('#chkBox1').prop("checked",true)
+    $('#chkBox2').prop("checked",true)
+    chkBoxToggle = 1
+
+  }else{
+
+    $('#chkBox1').prop("checked",false)
+    $('#chkBox2').prop("checked",false)
+    chkBoxToggle = 0
+  }
+
+ })
+
+
+    $(document).on('click','.chkBox' ,function(e){
+
+     let arr = []
+     arr = $('.chkBox')
+     let chk = 0;
+    for(let i = 0; i< arr.length; i++){
+
+      if(!$(arr[i]).is(":checked")){
+         $('#AllChkBox').prop("checked",false)
+         chkBoxToggle = 0
+         chk = 1;
+      }
+    }
+    if(chk == 0){
+          $('#AllChkBox').prop("checked",true)
+          chkBoxToggle = 1
+    }
+
+    })
+
+
+  $('#btn').click(function(){
+
+  let accountNumber = $('#accountNumber').val()
+  let product_name = [[${product_name}]]
+  let percent = [[${percent}]]
+  let balance = [[${money}]]
+  accountNumber = accountNumber.replaceAll('-', '');
+
+  let AllChkBox = $('#AllChkBox').is(":checked")
+
+  if(!AllChkBox){
+    alert('약관 사항에 동의해주세요.')
+    return;
+  }
+
+
+
+
+
+  $.ajax({
+
+    type : 'POST',
+    url : '/SavingsAccount',
+    dataType : 'text',
+    data : {
+        accountNumber : accountNumber,
+        balance : balance,
+        product_name : product_name,
+        percent : percent
+
+    },success:function(data){
+      if(data == 'true'){
+       alert('적금에 가입되셨습니다.')
+       self.location='/'
+
+
+      }else{
+        alert('선택하신 계좌의 잔액이 부족합니다.')
+      }
+
+    },error:function(data){
+      alert('실패')
+    }
+
+
+  })
+
+
+  })
+
+
+
+</script>
+
+</body>
+</html>

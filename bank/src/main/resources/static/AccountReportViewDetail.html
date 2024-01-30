@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+<head>
+  <meta charset="utf-8" />
+</head>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+
+<style>
+
+  .fakeItem{
+    border : 1px solid black;
+
+
+  }
+
+</style>
+
+
+<body>
+
+
+<div class="container mt-5">
+  <div class="w-100 mt-5">
+
+
+
+      <div class="align-items-start flex-column">
+        <div style="height:100px text-center">
+        </div>
+
+        <div class="d-flex justify-content-center">
+
+          <div class="col-12" style="border: 2px solid black;border-radius:1%">
+
+            <div class=" mb-3 mt-5 ms-3">
+              <span class="fw-bold">피해 발생 사이트</span>
+            </div>
+
+            <div class="align-items-start flex-column ">
+
+              <div>
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default" style="background-color:#337cbc;color:white">사이트 명</span>
+                  <input type="text" style="background-color:white"  readonly name="siteName" id="siteName" placeholder="ex) 중고나라"  class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                </div>
+
+              </div>
+
+              <hr class="mt-3 mb-3">
+
+              <div>
+                <div class="mb-3 ms-3">
+                  <span class="fw-bold "> 사기 물품 </span>
+                </div>
+
+                <div class="align-items-center flex-column">
+                  <div class=" d-flex justify-content-center" style="height:100px">
+                    <div class="col-1">
+                    </div>
+                    <div class="col-2 m-1 fakeItem " data-value="휴대폰/주변기기" >
+                      <span class="fw-bold">  휴대폰/주변기기</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem " data-value="티켓/상품권">
+                      <span class="fw-bold"> 티켓/상품권</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem " data-value="패션/의류">
+                      <span class="fw-bold"> 패션/의류</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem " data-value="카메라/주변기기">
+                      <span class="fw-bold"> 카메라/주변기기</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem " data-value=" MP3/PMP">
+                      <span class="fw-bold">MP3/PMP</span>
+                    </div>
+                    <div class="col-1">
+                    </div>
+
+                  </div>
+
+                  <div class=" d-flex justify-content-center"  style="height:100px">
+                    <div class="col-2 m-1 fakeItem" data-value="컴퓨터/주변기기">
+                      <span class="fw-bold">컴퓨터/주변기기 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="자동차/바이크">
+                      <span class="fw-bold">자동차/바이크 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="태블릿/노트북">
+                      <span class="fw-bold">태블릿/노트북 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="스포츠/레저">
+                      <span class="fw-bold"> 스포츠/레저 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="신발">
+                      <span class="fw-bold"> 신발</span>
+                    </div>
+                  </div>
+                  <div class=" d-flex justify-content-center"  style="height:100px">
+                    <div class="col-2 m-1 fakeItem" data-value="게임기/주변기기">
+                      <span class="fw-bold"> 게임기/주변기기 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="유아동/출산">
+                      <span class="fw-bold"> 유아동/출산 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="가전/전자제품">
+                      <span class="fw-bold"> 가전/전자제품</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="가방/지갑/잡화">
+                      <span class="fw-bold"> 가방/지갑/잡화 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="음악/영화">
+                      <span class="fw-bold">음악/영화 </span>
+                    </div>
+                  </div>
+                  <div class=" d-flex justify-content-center"  style="height:100px">
+
+                    <div class="col-2 m-1 fakeItem" data-value="도서/학습">
+                      <span class="fw-bold"> 도서/학습</span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="시계">
+                      <span class="fw-bold"> 시계 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="뷰티/미용/화장품">
+                      <span class="fw-bold">뷰티/미용/화장품 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="취미/인형/피규어">
+                      <span class="fw-bold">취미/인형/피규어 </span>
+                    </div>
+                    <div class="col-2 m-1 fakeItem" data-value="식품/음료/의약품">
+                      <span class="fw-bold">식품/음료/의약품 </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <input type="hidden" id="scamProductType" name="scamProductType">
+
+              <hr class="mt-3 mb-3">
+
+
+              <div>
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default2" style="background-color:#337cbc;color:white"> 거래 물품명 </span>
+                  <input type="text" style="background-color:white"  readonly name="scamProductName" id="scamProductName" placeholder="ex) 나이키 조던" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default2">
+                </div>
+              </div>
+
+
+              <div class="mt-3">
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default3" style="background-color:#337cbc;color:white"> 용의자 아이디 </span>
+                  <input type="text" style="background-color:white"  readonly name="suspectId" id="suspectId" placeholder="ex) test1234" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default3">
+                </div>
+
+              </div>
+
+
+              <div class="mt-3">
+
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default4" style="background-color:#337cbc;color:white"> 사기 게시글 url </span>
+                  <input type="text" style="background-color:white"  readonly name="scamPostUrl" id="scamPostUrl" placeholder="ex) www.localhost8102.com" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default4">
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+
+            <hr >
+            <div class="ms-3 mt-2 mb-3 mt-2">
+              <span class="fw-bold ">용의자 정보</span>
+            </div>
+
+            <div class="align-items-start flex-column">
+
+              <div>
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default5" style="background-color:#337cbc;color:white"> 은행명 </span>
+                  <input type="text" style="background-color:white"  readonly  name="suspectBankName"  id="suspectBankName" placeholder="ex) 새마을 금고" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default5">
+                </div>
+              </div>
+
+
+              <div class="mt-3">
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default6" style="background-color:#337cbc;color:white"> 명의자 성명 </span>
+                  <input type="text" style="background-color:white"  readonly  name="suspectFullName" id="suspectFullName" placeholder="ex) 오민규" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default6">
+                </div>
+
+              </div>
+
+
+              <div class="mt-3">
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default7" style="background-color:#337cbc;color:white">계좌 번호 </span>
+                  <input type="text" style="background-color:white"  readonly  name="suspectAccountNumber" id="suspectAccountNumber" placeholder="ex) 0000-0000-0000-0000" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default7">
+                </div>
+
+              </div>
+
+
+              <div class="mt-3">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default8" style="background-color:#337cbc;color:white">입금 금액 </span>
+                  <input type="text" style="background-color:white"  readonly  name="depositAmount" id="depositAmount" placeholder="ex) 3만원" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default8">
+                </div>
+
+              </div>
+
+
+
+              <div class="mt-3">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default9 " style="background-color:#337cbc;color:white">입금일 </span>
+                  <input type="text" style="background-color:white"  readonly  name="depositDate" id="depositDate" placeholder="ex) 2024년 12월 11일" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default9">
+                </div>
+              </div>
+
+
+
+              <div class="mt-3">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default10" style="background-color:#337cbc;color:white"> 용의자 연락처 </span>
+                  <input type="text" style="background-color:white"  readonly  name="suspectContact" id="suspectContact" placeholder="ex) 010-0000-0000" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default10">
+                </div>
+
+                <br>
+                <span class="fw-bold ms-2" style="color:red"> ※ 반드시 통화나 SMS로 소통해본 연락처만 등록하셔야 합니다.</span>
+                <br>
+                <span class="ms-2">
+                  직접 소통해 보지 않은 경우, 허위 또는 타인의 연락처일 확률이 높습니다</span>
+                <br>
+                <span class="ms-2"> ※  050 임시번호 등록은 불가합니다.</span>
+
+              </div>
+
+              <hr class="mt-3 mb-3">
+
+
+              <div>
+                <div class="ms-3 mb-3 fw-bold">
+                  용의자 성별
+                </div>
+
+
+                <div class="form-check ms-4">
+                  <input class="form-check-input " type="radio" name="suspectGender" value="남성" id="flexRadioDefault1" checked readonly disabled>
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    남성
+                  </label>
+                </div>
+                <div class="form-check ms-4">
+                  <input class="form-check-input " type="radio" name="suspectGender" value="여성" id="flexRadioDefault2"  disabled readonly>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    여성
+                  </label>
+                </div>
+
+              </div>
+
+
+
+              <div class="mt-3">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default11" style="background-color:#337cbc;color:white">용의자 특징 </span>
+                  <input type="text" style="background-color:white"  readonly  name="suspectCharacteristics" id="suspectCharacteristics" placeholder="ex) 경상도 사투리 사용" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default11">
+                </div>
+              </div>
+
+            </div>
+
+
+
+            <hr>
+
+            <div class="mb-3 mt-2 ms-3">
+              <span class="fw-bold ">사건 발생 개요</span>
+
+            </div>
+
+            <div class="align-items-start flex-column">
+
+              <div class="ms-2">
+                <span > 1.물품을 받은 경우에는 물품 사진을 첨부하세요.</span> <br>
+                 <span> 2.용의자의 주민등록번호와 사진은 절대 등록하시면 안됩니다.(피해사례 등록자가 법적 처벌을 받을 수 있습니다.)</span>
+              </div>
+
+              <div class="mt-2 w-75 ms-2">
+              <textarea rows="10" class="w-100 fw-bold" readonly name="statementContent" id="statementContent" style="resize:none"  placeholder="상세하게 작성해주세요.">
+
+
+
+              </textarea>
+
+              </div>
+              <div>
+                <!--              <input type="file" name="evidencePhotos" id="evidencePhotos">-->
+              </div>
+
+
+
+
+            </div>
+
+
+            <hr class="mt-2 mb-2">
+
+            <div class="ms-3 mb-2 mt-2">
+              <span class="fw-bold ">신고자 정보</span>
+            </div>
+
+            <div class="mt-1 mb-2 ms-3">
+              <span class="fw-bold" style="color:red"> ※ 신고자 정보는 비공개 처리 됩니다.</span>
+            </div>
+
+            <div class="align-items-start flex-column">
+
+              <div>
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default12" style="background-color:#337cbc;color:white">성명 </span>
+                  <input type="text" style="background-color:white"  readonly  name="reporterDescription" id="reporterDescription" placeholder="ex) 홍길동" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default12">
+                </div>
+
+              </div>
+
+
+              <div class="mt-2">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default13" style="background-color:#337cbc;color:white">연락처 </span>
+                  <input type="text" style="background-color:white"  readonly  name="reporterContact" id="reporterContact" placeholder="ex) 010-0000-0000" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default13">
+                </div>
+              </div>
+
+
+
+              <div class="mt-2">
+
+                <div class="input-group mb-3 ms-3 w-75">
+                  <span class="input-group-text fw-bold" id="inputGroup-sizing-default14" style="background-color:#337cbc;color:white">이메일 </span>
+                  <input type="text" style="background-color:white"  readonly name="reporterEmail" id="reporterEmail" placeholder="ex) asdfs@naver.com" class="form-control fw-bold" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default14">
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <hr class="mt-2 mb-2">
+
+            <div class=" mb-3 mt-2 ms-3">
+              <span class="fw-bold">약관 동의</span>
+            </div>
+            <div class="align-items-start flex-column">
+
+              <hr class="mt-3 mb-3">
+
+              <div class="ms-2  ">
+                <input type="checkbox" disabled readonly id="agreementToTheTerms" name="agreementToTheTerms"> 피해사례 등록 약관에 동의합니다.(필수) ::
+              </div>
+
+
+              <div class="ms-2">
+                <input type="checkbox" disabled readonly id="agreementToTheTerms2" name="agreementToTheTerms2"> 서비스 이용약관에 동의합니다.(필수) :: 약관 보기
+              </div>
+
+            </div>
+
+            <div class="mt-5 mb-5">
+             <div class="d-flex justify-content-center">
+               <div class="col-4 text-center" >
+                 <span id="registrationReport" >등록</span>
+               </div>
+               <div class="col-4 text-center">
+                 <span id="returnBtn" >돌아가기</span>
+               </div>
+               <div class="col-4 text-center">
+                 <span id="deleteReport">삭제</span>
+               </div>
+
+             </div>
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+  </div>
+
+</div>
+
+
+
+
+
+</body>
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+
+$(document).ready(function() {
+
+
+  var urlParams = new URLSearchParams(window.location.search);
+  var reportNum = urlParams.get('reportNum');
+
+
+
+      $.ajax({
+              type:"GET",
+              url: '/reportAccountDetailView',
+              data: {
+                  reportNum : reportNum
+              },
+              dataType : 'json',
+              success:function(data){
+
+
+           if(data.memberRole.includes('USER')){
+             $('#registrationReport, #deleteReport').css('display', 'none');
+            }
+
+
+           $('#reportDate').val(data.reportDate);
+          $('#reportNum').val(data.reportNum);
+          $('#reportStatus').prop('checked', data.reportStatus);
+
+
+          $('#reporterContact').val(data.reporterContact);
+          $('#reporterDescription').val(data.reporterDescription);
+          $('#reporterEmail').val(data.reporterEmail);
+
+
+          $('#scamPostUrl').val(data.scamPostUrl);
+          $('#scamProductName').val(data.scamProductName);
+          $('#scamProductType').val(data.scamProductType);
+
+          $('#siteName').val(data.siteName);
+          $('#statementContent').val(data.statementContent);
+          $('#suspectAccountNumber').val(data.suspectAccountNumber);
+          $('#suspectBankName').val(data.suspectBankName);
+          $('#suspectCharacteristics').val(data.suspectCharacteristics);
+          $('#suspectContact').val(data.suspectContact);
+          $('#suspectFullName').val(data.suspectFullName);
+          $('input[name="suspectGender"][value="' + data.suspectGender + '"]').prop('checked', true);
+          $('#suspectId').val(data.suspectId);
+          $('#depositDate').val(data.depositDate);
+          $('#depositAmount').val(data.depositAmount);
+          $('#agreementToTheTerms').prop('checked', data.agreementToTheTerms);
+          $('#agreementToTheTerms2').prop('checked', data.agreementToTheTerms2);
+
+
+
+      $('.fakeItem').each(function(e) {
+       if( $(this).data('value') ==  data.scamProductType){
+                    $(this).css({
+                     'background-color': '#337cbc',
+                    'color': 'white'
+              });
+            }
+          });
+
+              },
+                  error:function(){
+                      alert('잠시 후 다시 시도해주세요.')
+               }
+            })
+
+
+
+})
+
+
+$('#returnBtn').click(function(){
+
+  window.close()
+
+})
+
+
+$('#registrationReport').click(function(){
+
+  let chk = confirm('계좌 사기 신고를 승인 하시겠습니까?')
+
+  if(chk){
+  var urlParams = new URLSearchParams(window.location.search);
+  var reportNum = urlParams.get('reportNum');
+
+
+      $.ajax({
+              type:"PUT",
+              url: '/registrationReport',
+              data: {
+                  reportNum : reportNum
+              },
+              success:function(data){
+                  alert('사기 계좌 신고가 등록되었습니다.')
+                  window.opener.location.href = "/AccountReportCheckPage"
+                  window.close();
+
+
+              },
+                  error:function(){
+                      alert('잠시 후 다시 시도해주세요.')
+               }
+            })
+
+}
+
+
+})
+
+
+
+$('#deleteReport').click(function(){
+
+
+ let chk = confirm('계좌 사기 신고를 삭제 하시겠습니까?')
+
+  if(chk){
+
+  var urlParams = new URLSearchParams(window.location.search);
+  var reportNum = urlParams.get('reportNum');
+
+
+      $.ajax({
+              type:"DELETE",
+              url: '/deleteReport',
+              data: {
+                  reportNum : reportNum
+              },
+              success:function(data){
+                alert('사기 계좌 신고가 삭제되었습니다.')
+                  window.opener.location.href = "/AccountReportCheckPage"
+                  window.close();
+              },
+                  error:function(){
+                      alert('잠시 후 다시 시도해주세요.')
+               }
+            })
+
+      }
+
+
+})
+
+
+</script>
+
+
+</html>
