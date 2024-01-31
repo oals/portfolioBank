@@ -572,6 +572,107 @@ https://github.com/oals/PortfolioBankTest
 
 
 
+<details>
+ <summary> SMS 전송 Service
+ 
+ </summary> 
+
+
+
+    @Override
+    public String SendSms(String phoneNumber) {
+
+        String newPhoneNumber = phoneNumber.replaceAll("-","");
+        Message coolsms = new Message("api_key", "api_secret");
+
+        Random rand = new Random();
+        String randNum = "";
+
+        randNum = rand.nextInt((9999 - 1000) + 1) + 1000 + "";
+
+
+        try {
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("to", newPhoneNumber);
+            params.put("from", "01090465953");
+            params.put("type", "sms");
+            params.put("text", "bank 회원가입 인증번호는 [" + randNum + "] 입니다.");
+
+            coolsms.send(params); // 메시지 전송
+
+        } catch (CoolsmsException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return randNum;
+
+       }
+
+    
+
+
+</details>
+
+
+
+
+<details>
+ <summary> SMS 인증 Script
+ 
+ </summary> 
+
+
+
+    $('#sendSMS').click(function(){
+  
+    let phoneNumber = $('#phone').val()
+
+    if(phoneNumber.length == 13){
+
+    $.ajax({
+        type:'GET',
+        dataType:'text',
+        url: '/sendSMS',
+        data : {
+            phoneNumber : phoneNumber
+        },
+        success:function(data){
+            alert('인증번호가 전송되었습니다.')
+
+            $('#smsChkBtn').click(function(){
+                let smsData = $('#smsData').val()
+                if(data == smsData){
+                    alert('인증 되었습니다.')
+                    smsChk = true
+                }else{
+                    alert('인증 실패')
+                    smsChk = false
+                }
+
+            })
+
+
+        },
+        error:function(e){
+            alert('오류')
+        }
+    })
+
+    }else{
+        alert('번호를 제대로 입력해주세요.')
+    }
+
+    })
+
+
+
+
+
+</details>
+
+
+
 
 
 <UL>
@@ -610,6 +711,150 @@ https://github.com/oals/PortfolioBankTest
 
 
 </details>
+
+
+
+<details>
+ <summary> 입금 계좌 존재 검사 Service
+ 
+ </summary> 
+
+
+
+    @Override
+    public boolean CheckReceiveAccount(TransferDTO transferDTO) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QAccount qAccount = QAccount.account;
+
+        // 받는 사람의 계좌 정보 검사
+
+        boolean chk = queryFactory.selectFrom(qAccount)
+                .where(qAccount.accountProduct.accountProductName.eq(transferDTO.getReceiveAccountName())
+                        .and(qAccount.accountNumber.eq(transferDTO.getReceiveAccountNumber()))
+                        .and(qAccount.member.memberName.eq(transferDTO.getReceiveMemberName())))
+                .fetchOne() == null ? false : true;
+
+
+        return chk;
+
+      }
+
+
+
+</details>
+
+
+<details>
+ <summary> 출금 계좌 잔액 검사 Service
+ 
+ </summary> 
+ 
+
+
+
+    @Override
+    public boolean CheckSendAccount(TransferDTO transferDTO) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QAccount qAccount = QAccount.account;
+
+        Account account = accountRepository.findById(transferDTO.getSendAccountNumber()).orElseThrow();
+
+        boolean sendChk = false;
+
+        if(account.getBalance() < transferDTO.getSendBalance()){
+            sendChk = false;
+        }else{
+            sendChk = true;
+        }
+
+        return sendChk;
+       }
+
+
+</details>
+
+
+<details>
+ <summary> 입출금 Service
+ 
+ </summary> 
+ 
+
+
+
+    @Override
+    public boolean SendMoney(TransferDTO transferDTO) {
+
+        boolean result = true;
+       
+        Account SendAccount = accountRepository.findById(transferDTO.getSendAccountNumber()).orElseThrow();
+
+        Account ReceiveAccount = accountRepository.findById(transferDTO.getReceiveAccountNumber()).orElseThrow();
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+        String date = now.format(formatter);
+
+
+        try{
+
+        // 보내는 사람의 계좌 이체 내역 추가
+            History SendHistory = History.builder()
+                    .balance(SendAccount.getBalance() - transferDTO.getSendBalance())  //잔액
+                    .money(transferDTO.getSendBalance())                                //보낸 금액
+                    .opt("송금")
+                    .counterpartyName(ReceiveAccount.getMember().getMemberName())       //받는 사람 이름
+                    .counterpartyAccountNumber(ReceiveAccount.getAccountNumber())           //받는 사람의 계좌 정보
+                    .counterpartyAccountName(ReceiveAccount.getAccountProduct().getAccountProductName())
+                    .updateDate(date)                                    //해당 날짜
+                    .account(SendAccount)
+                    .build();
+
+            SendAccount.addHistory(SendHistory);
+
+
+
+
+        //받는 사람의 계좌 이체 내역 추가
+        History ReceiveHistory = History.builder()
+                    .balance(ReceiveAccount.getBalance() + transferDTO.getSendBalance()) //잔액
+                    .money(transferDTO.getSendBalance())                                 //받은 금액
+                    .opt("입금")
+                    .counterpartyName(SendAccount.getMember().getMemberName())             //보낸 사람 이름
+                    .counterpartyAccountNumber(SendAccount.getAccountNumber())            //보낸 사람 계좌 정보
+                    .counterpartyAccountName(SendAccount.getAccountProduct().getAccountProductName())
+                    .updateDate(date)
+                    .account(ReceiveAccount)
+                    .build();
+
+            ReceiveAccount.addHistory(ReceiveHistory);
+
+
+             //출금 계좌 잔액 감소
+            SendAccount.MinusBalance(transferDTO.getSendBalance());
+            accountRepository.save(SendAccount);
+
+            //입금 계좌 잔액 증가
+            ReceiveAccount.PlusBalance(transferDTO.getSendBalance());
+            accountRepository.save(ReceiveAccount);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            result =false;
+        }
+
+
+        return result;
+        }
+
+    
+
+</details>
+
+
+
 
 
 
@@ -660,6 +905,188 @@ https://github.com/oals/PortfolioBankTest
 
 
 </details>
+
+
+<details>
+ <summary> 다중 스레드 Service
+ 
+ </summary> 
+ 
+
+
+     public class MyRunnable implements Runnable {
+        private final String accountNumber;
+        private final String savingsProductName;
+        private boolean threadChk;
+
+        public MyRunnable(String accountNumber,String savingsProductName) {
+            this.accountNumber = accountNumber;
+            this.savingsProductName =  savingsProductName;
+            this.threadChk = true;
+        }
+
+        @Override
+        public void run() {
+            while(threadChk) {
+
+                try {//30L * 24 * 60 * 60 * 1000
+                    Thread.sleep(60000);
+
+                    threadChk = threadService.savingsThread(accountNumber,savingsProductName);
+
+
+
+                }    catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+      }
+
+
+
+
+
+</details>
+
+
+
+<details>
+ <summary> savingsThread
+ 
+ </summary> 
+ 
+
+
+
+       @Override
+       @Transactional
+       public boolean savingsThread(String accountNumber,String savingsProductName) {
+
+
+        boolean threadChk = true;
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QSavings qSavings = QSavings.savings;
+
+        Savings savingsHistoryEntity = queryFactory.selectFrom(qSavings)
+                .where(qSavings.account.accountNumber.eq(accountNumber)
+                        .and(qSavings.savingsProduct.productName.eq(savingsProductName)
+                                .and(qSavings.isActive.eq(true))))
+                .limit(1L)
+                .fetchOne();
+
+        //만기 체크
+        int savingCount = savingsHistoryEntity.getHistories().size() + 1;
+        log.info("savingCount : " +  savingCount);
+
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+        String date = now.format(formatter);
+
+        //스레드 종료
+        if(savingCount == savingsHistoryEntity.getSavingsProduct().getMaturityPeriod() + 1){
+
+            double principal = savingsHistoryEntity.getSavingsBalance(); // 원금
+            double monthlyInterestRate = savingsHistoryEntity.getSavingsProduct().getAppliedInterestRate(); // 월간 이율
+            int termInMonths = savingsHistoryEntity.getSavingsProduct().getMaturityPeriod(); // 기간 (개월)
+
+            // 이율 변환
+            monthlyInterestRate = monthlyInterestRate / 12; // 연간 이율을 월간 이율로 변환
+            int returnSavings = (int)(principal * Math.pow((1 + monthlyInterestRate / 100), termInMonths));
+
+
+            Account account = savingsHistoryEntity.getAccount();
+
+            History history = History.builder()
+                    .balance(account.getBalance() +  returnSavings)  //현재 잔액
+                    .money(returnSavings)                      //보낸 금액
+                    .opt("적금 반환")
+                    .counterpartyName(savingsHistoryEntity.getSavingsProduct().getProductName())
+                    .account(savingsHistoryEntity.getAccount())
+                    .updateDate(date)                                    //해당 날짜
+                    .build();
+
+            account.PlusBalance(returnSavings);
+
+            savingsHistoryEntity.EndSavings(returnSavings,returnSavings - (int)principal);
+
+
+            accountRepository.save(account);
+            historyRepository.save(history);
+            savingsRepository.save(savingsHistoryEntity);
+
+            log.info("만기 반환액 : " + returnSavings);
+
+            threadChk = false;
+
+
+        } else{  //만기 상태가 아닐 시
+
+
+            if(savingsHistoryEntity.getAccount().getBalance() >= savingsHistoryEntity.getSavingsProduct().getMonthlyDepositAmount()){
+
+                int accountBalance = savingsHistoryEntity.getAccount().getBalance();
+                //계좌에서 금액 감소
+                savingsHistoryEntity.getAccount().MinusBalance(savingsHistoryEntity.getSavingsProduct().getMonthlyDepositAmount());
+
+
+                //적금 데이터 저장
+                SavingsHistory savingsHistory = SavingsHistory.builder()
+                        .savingsStartDate(date)
+                        .savingsPaymentStatus(true)
+                        .savingsCount(savingCount)
+                        .savings(savingsHistoryEntity)
+                        .build();
+
+                savingsHistoryEntity.addHistory(savingsHistory);
+                savingsHistoryEntity.UpdateSavingsBalance(savingsHistoryEntity.getSavingsProduct().getMonthlyDepositAmount());
+
+                //일반 내역에 저장
+                History history = History.builder()
+                        .balance(accountBalance -  savingsHistoryEntity.getSavingsProduct().getMonthlyDepositAmount())  //현재 잔액
+                        .money(savingsHistoryEntity.getSavingsProduct().getMonthlyDepositAmount())                      //보낸 금액
+                        .opt("적금")
+                        .counterpartyName(savingsHistoryEntity.getSavingsProduct().getProductName())
+                        .account(savingsHistoryEntity.getAccount())
+                        .updateDate(date)                                    //해당 날짜
+                        .build();
+
+                accountRepository.save(savingsHistoryEntity.getAccount());
+                savingsRepository.save(savingsHistoryEntity);
+                historyRepository.save(history);
+
+
+            }else{
+                //계좌 잔고가 부족 할때 미납 처리
+                SavingsHistory savingsHistory = SavingsHistory.builder()
+                        .savingsStartDate(date)
+                        .savingsPaymentStatus(false)
+                        .savingsCount(savingCount)
+                        .savings(savingsHistoryEntity)
+                        .build();
+
+                savingsHistoryEntity.addHistory(savingsHistory);
+                savingsHistoryEntity.UpdateMissedPayments();
+
+                savingsRepository.save(savingsHistoryEntity);
+
+
+            }
+        }
+
+
+        return threadChk;
+      }
+
+
+
+
+
+
+</details>
+
 
 
 <UL>
