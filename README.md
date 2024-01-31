@@ -301,7 +301,7 @@ https://github.com/oals/PortfolioBankTest
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountNumber")
-    private Account account;   //적금 게좌
+    private Account account;   //적금 계좌
 
 
     @OneToMany(mappedBy = "savings", cascade = CascadeType.ALL)
@@ -513,7 +513,7 @@ https://github.com/oals/PortfolioBankTest
 
 # 핵심 기능 및 페이지 소개
 
-
+<br>
 
 
 <h3>계좌 생성</h3>
@@ -532,6 +532,14 @@ https://github.com/oals/PortfolioBankTest
  <summary> 계좌 생성 플로우 차트
  
  </summary> 
+
+
+
+![계좌 생성](https://github.com/oals/portfolioBank/assets/136543676/4037ddac-5ae3-4296-ab99-9389a6e29c6a)
+
+
+
+
  
 
 
@@ -543,6 +551,7 @@ https://github.com/oals/PortfolioBankTest
  
  </summary> 
  
+![sms 인증](https://github.com/oals/portfolioBank/assets/136543676/9cf8f27d-5ec6-4a39-8d14-9533aa508114)
 
 
 </details>
@@ -584,6 +593,7 @@ https://github.com/oals/PortfolioBankTest
  
  </summary> 
  
+![계좌 이체](https://github.com/oals/portfolioBank/assets/136543676/3140b460-aada-44d0-a766-5b7a4276f563)
 
 
 </details>
@@ -622,6 +632,7 @@ https://github.com/oals/PortfolioBankTest
  
  </summary> 
  
+![적금가입](https://github.com/oals/portfolioBank/assets/136543676/2b9e631f-a1e5-4fd6-8a59-bdb2708d5561)
 
 
 </details>
@@ -632,6 +643,7 @@ https://github.com/oals/PortfolioBankTest
  
  </summary> 
  
+![적금 스레드](https://github.com/oals/portfolioBank/assets/136543676/19ce8acc-7092-4cc6-84dc-b0340df80cd8)
 
 
 </details>
@@ -699,6 +711,7 @@ https://github.com/oals/PortfolioBankTest
  
  </summary> 
  
+![사기 계좌 조회](https://github.com/oals/portfolioBank/assets/136543676/2e337516-f6ba-4a1b-a556-6882ff2336f6)
 
 
 </details>
@@ -730,13 +743,6 @@ https://github.com/oals/PortfolioBankTest
 
 <br>
 <br>
-
-
-<details>
- <summary> 사기 계좌 신고 플로우 차트
- 
- </summary> 
- 
 
 
 </details>
@@ -799,15 +805,6 @@ https://github.com/oals/PortfolioBankTest
 <br>
 <br>
 
-
-<details>
- <summary> 회원가입 플로우 차트
- 
- </summary> 
- 
-
-
-</details>
 
 <UL>
   <LI>아이디 중복 방지, SMS 인증을 통해 회원 가입이 가능하도록 구현 했습니다.</LI>
