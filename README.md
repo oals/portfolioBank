@@ -2,12 +2,12 @@
 은행 웹 사이트 개인 프로젝트 포트폴리오
 
 # 소개
- 개인의 계좌를 사이트에 등록 시켜 사용자 간의 이체와 적금 가입이 가능한 사이트 입니다.  
-
+ 개인의 계좌를 생성해 사용자 간의 이체와 적금 가입 및 사기 계좌 조회, 계좌 신고를 할 수 있는 사이트 입니다.  
 
 https://github.com/oals/PortfolioBankTest 
 
-2023년 9월에 일주일간 만들고 방치 해뒀던 은행 프로젝트를 업데이트 했다
+2023년 9월에 일주일간 만들고 방치 해뒀던 은행 프로젝트를 업데이트 했습니다.
+
 
 # 제작기간 & 참여 인원
 <UL>
@@ -31,6 +31,7 @@ https://github.com/oals/PortfolioBankTest
 
 # E-R 다이어그램
 
+![bank erd text](https://github.com/oals/portfolioBank/assets/136543676/6f98c94a-98d5-4190-b668-04e3d7bd2328)
 
 
 # Entity
@@ -135,7 +136,7 @@ https://github.com/oals/PortfolioBankTest
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "accountProductNo")
+    @JoinColumn(name = "accountProductName")
     private AccountProduct accountProduct;
 
 
@@ -243,8 +244,9 @@ https://github.com/oals/PortfolioBankTest
     private String counterpartyAccountName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_number")
     private Account account;
+
 
     }
 
@@ -514,22 +516,209 @@ https://github.com/oals/PortfolioBankTest
 
 
 
-
-![회원가입](https://github.com/oals/portfolioBank/assets/136543676/b8d35d05-2baa-423a-8730-c2cdbe6ae574)
+<h3>계좌 생성</h3>
+<br>
 
 
 ![계좌생성](https://github.com/oals/portfolioBank/assets/136543676/66c58a1d-b2a6-4d1d-be5b-60f13b824fd1)
 
 
+
+
+<br>
+<br>
+
+<details>
+ <summary> 계좌 생성 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+
+<details>
+ <summary> SMS 인증 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+
+
+
+
+
+<UL>
+  <LI>CoolSMS의 SMS 전송 API를 사용해 계좌 생성 시 SMS 인증을 하도록 구현했습니다. </LI>
+  <LI>계좌에 상품을 연결시키고 상품 당 하나의 계좌만 생성 가능하도록 구현했습니다.</LI>
+  <LI>계좌의 비밀번호를 설정해 계좌 정보 페이지 접근, 이체 , 적금 가입 시의 보안을 강화했습니다. </LI>
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+
+<h3>계좌 이체</h3>
+<br>
+
+
+
 ![계좌이체](https://github.com/oals/portfolioBank/assets/136543676/1590b910-7e75-41e7-9765-cee1d4ce3f23)
 
+
+
+<br>
+<br>
+
+<details>
+ <summary> 계좌 이체 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+
+
+<UL>
+  <LI>계좌 정보 페이지 접근, 계좌 이체 시 계좌 생성 시에 설정해둔 비밀번호를 입력해야 접근 할 수 있도록 구현했습니다.</LI>
+  <LI>계좌 정보 페이지에서 가입중인 적금,진행중인 적금,입출금 내역,적금 및 적금 반환 내역을 확인 할 수 있습니다. </LI>
+  <LI>계좌 이체 시 상대방의 계좌 상품 및 계좌번호를 입력해 이체 할 수 있도록 구현했습니다.</LI>
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+<h3>적금</h3>
+<br>
+
+
+
 ![적금가입](https://github.com/oals/portfolioBank/assets/136543676/9b87152d-4834-4f22-9e7e-77906806dc6c)
+
+
+
+<br>
+<br>
+
+<details>
+ <summary> 적금 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+
+<details>
+ <summary> 적금 다중 스레드 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+
+<UL>
+  <LI>가입 할 적금 상품을 선택 할 수 있고 상품 별 이율,적금 기간이 다르게 구현 했습니다. </LI>
+ <LI>적금 가입 시 다중 스레드가 등록되도록 구현했습니다.</LI>
+  <LI>적금 기간이 끝났을 때 스레드가 종료 되며 이율과 적금액을 계산해 반환 금액을 이체 하도록 구현 했습니다.</LI>
+  <LI>적금 가입 시 연결 할 계좌를 선택 할 수 있고 해당 계좌에 첫 적금액이 존재 하는 지 검사하도록 구현했습니다.</LI>
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+<h3>적금 반환</h3>
+<br>
 
 
 ![적금-완료-및-반환-내역](https://github.com/oals/portfolioBank/assets/136543676/4e2a7beb-4545-46da-90ef-acc2b56247f7)
 
 
+
+<br>
+<br>
+
+
+<UL>
+  <LI>테스트를 위해 1분 간격으로 스레드가 동작하도록 구현했습니다.</LI>
+  <LI>종료된 적금에 가입 적금 내역이 기록 되고 적금 반환 액이 적금 내역에 기록 된 걸 확인 할 수 있습니다.</LI>
+
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+
+<h3>사기 계좌 조회</h3>
+<br>
+
+
+
 ![사기조회](https://github.com/oals/portfolioBank/assets/136543676/2d8ea14f-0b5e-4017-aa79-3bdf9e2be443)
+
+
+
+<br>
+<br>
+
+
+<details>
+ <summary> 사기 계좌 조회 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+<UL>
+  <LI>계좌 번호를 통해 사기 계좌를 조회 할 수 있습니다.</LI>
+  <LI>자세히 보기 버튼을 통해 신고 정보를 확인 할 수 있습니다.</LI>
+  <LI>신고자 정보는 관리자만 확인 할 수 있도록 구현했습니다.</LI>  
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+<h3>사기 계좌 신고</h3>
+<br>
 
 
 
@@ -538,7 +727,113 @@ https://github.com/oals/PortfolioBankTest
 
 
 
+
+<br>
+<br>
+
+
+<details>
+ <summary> 사기 계좌 신고 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+<UL>
+  <LI>사기 계좌에 및 상황에 대해 작성 할 수 있도록 구현 했습니다.</LI>
+  <LI>신고 완료 시 관리자가 해당 신고 정보를 검토 후 공개 및 삭제 할 수 있도록 구현 했습니다.</LI>
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+<h3>사기 계좌 신고 등록</h3>
+<br>
+
+
+
 ![사기신고승인](https://github.com/oals/portfolioBank/assets/136543676/21281e69-65d6-4930-b3a5-27d8829a498b)
+
+
+
+
+
+<br>
+<br>
+
+
+
+<UL>
+  <LI>관리자가 계좌 신고 정보를 검토 후 삭제 및 등록을 할 수 있도록 구현했습니다. </LI>
+
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+
+
+
+
+<h3>회원가입</h3>
+<br>
+
+
+![회원가입](https://github.com/oals/portfolioBank/assets/136543676/b8d35d05-2baa-423a-8730-c2cdbe6ae574)
+
+
+
+
+<br>
+<br>
+
+
+<details>
+ <summary> 회원가입 플로우 차트
+ 
+ </summary> 
+ 
+
+
+</details>
+
+<UL>
+  <LI>아이디 중복 방지, SMS 인증을 통해 회원 가입이 가능하도록 구현 했습니다.</LI>
+  <LI> 우편 번호 API를 사용하여 주소를 검색 할 수 있도록 구현했습니다. </LI>
+
+
+</UL>
+
+
+<br>
+<br>
+
+
+# 프로젝트를 통해 느낀 점과 소감
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
