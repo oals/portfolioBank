@@ -558,6 +558,19 @@ https://github.com/oals/PortfolioBankTest
 
 
 
+<details>
+ <summary> SMS 인증 이미지
+ 
+ </summary> 
+
+![sms 인증 폰](https://github.com/oals/portfolioBank/assets/136543676/0eabaf09-8d2f-4d63-a230-7e64e08f2b51)
+
+
+
+</details>
+
+
+
 
 
 
