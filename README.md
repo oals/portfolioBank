@@ -1156,6 +1156,66 @@ https://github.com/oals/PortfolioBankTest
 
 </details>
 
+<details>
+ <summary> 사기 계좌 조회 Service
+ 
+ </summary> 
+ 
+
+       @Override
+       public PageResponseDTO<ReportListDTO> searchAccount(PageRequestDTO pageRequestDTO, String suspectAccountNumber) {
+
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QReport qReport = QReport.report;
+
+
+        Pageable pageable = pageRequestDTO.getPageable();
+
+        List<Report> query = queryFactory.selectFrom(qReport)
+                .where(qReport.suspectAccountNumber.eq(suspectAccountNumber)
+                        .and(qReport.reportStatus.eq(true)))
+                .orderBy(qReport.reportDate.desc())
+                .offset(pageable.getOffset())   //N 번부터 시작
+                .limit(pageable.getPageSize()) //조회 갯수
+                .fetch();
+
+
+        List<ReportListDTO> list = new ArrayList<>();
+
+        for(int i = 0; i < query.size(); i++){
+
+            ReportListDTO reportListDTO = ReportListDTO.builder()
+                    .reportNum(query.get(i).getReportNum())
+                    .siteName(query.get(i).getSiteName())
+                    .scamProductType(query.get(i).getScamProductType())
+                    .depositAmount(query.get(i).getDepositAmount())
+                    .reportDate(query.get(i).getReportDate())
+                    .build();
+
+            list.add(reportListDTO);
+
+        }
+
+        Long count = queryFactory.selectFrom(qReport)
+                .where(qReport.suspectAccountNumber.eq(suspectAccountNumber)
+                        .and(qReport.reportStatus.eq(true)))
+                .stream().count();
+
+        return PageResponseDTO.<ReportListDTO>widthAll()
+                .pageRequestDTO(pageRequestDTO)
+                .list(list)
+                .total( count.intValue())
+                .build();
+
+
+
+       }
+
+
+</details>
+
+
 <UL>
   <LI>계좌 번호를 통해 사기 계좌를 조회 할 수 있습니다.</LI>
   <LI>자세히 보기 버튼을 통해 신고 정보를 확인 할 수 있습니다.</LI>
